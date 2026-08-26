@@ -1,0 +1,15 @@
+---
+description: Deep modules at Box, cache, and ask seams. Applies when editing TypeScript.
+globs: "**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Deep modules
+
+Put Box HTTP, Cache Components directives, and AI Gateway calls behind small interfaces. Callers should not import the Box SDK in page files.
+
+Preferred seams (same as `CONTEXT.md`): `canAccess`, `getDocument`, webhook verify+revalidate, ask tools.
+
+Accept Box and cache as injected adapters. Pages compose; they do not open sockets. If a function is a pass-through, delete it rather than keep a shallow wrapper.
+
+UI copy: short, specific, no filler. No “welcome to your journey” or empty section labels.

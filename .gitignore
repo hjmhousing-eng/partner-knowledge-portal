@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+coverage/
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.scratch/
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Test
+playwright-report/
+test-results/

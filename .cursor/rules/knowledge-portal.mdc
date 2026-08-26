@@ -1,0 +1,14 @@
+---
+description: Portal invariants, vocabulary, and commit comments for this take-home.
+alwaysApply: true
+---
+
+# Knowledge portal
+
+Read `CONTEXT.md` before changing behavior. If a change contradicts `docs/adr/`, say so in the commit and the PR description; do not silently override.
+
+Use glossary terms from `CONTEXT.md` (library, article, shell, body, as-user, audience, gate).
+
+Comments in code mark deliberate decisions (cache key, 404 vs 403, webhook `revalidateTag(tag, "max")`, Gateway fallback). One or two sentences. No narration of what the next line does.
+
+Commits are small and public-history-friendly: one seam per commit when possible. Do not skip hooks. Do not commit `.env` or Box tokens.
