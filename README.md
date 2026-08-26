@@ -6,7 +6,13 @@ This repository is a Solutions Architect take-home. Planning and decision record
 
 ## Try it
 
-Not deployed yet. After the first Vercel deploy, this section will have the public URL, a test partner login, and canned ask questions.
+```bash
+npm install
+npm test
+npm run dev
+```
+
+Not on Vercel yet. After the first deploy, this section will have the public URL, a test partner login, and canned ask questions.
 
 ## Layout
 
