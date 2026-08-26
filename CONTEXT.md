@@ -6,7 +6,7 @@ Partners read enablement as pages (`/products/sku-a/battlecard`), not as a folde
 
 ## Status
 
-Planning is in [`docs/`](./docs/00-overview.md). Application code is not started.
+Planning is in [`docs/`](./docs/00-overview.md). The four seams in `src/lib/` have tests; routes and Box adapters come next.
 
 ## Vocabulary
 
