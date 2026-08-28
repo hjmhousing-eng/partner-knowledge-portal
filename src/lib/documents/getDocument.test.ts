@@ -17,6 +17,7 @@ describe("getDocument", () => {
   const battlecard: ArticleBody = {
     fileId: "file_1",
     title: "SKU-A battlecard",
+    format: "markdown",
     markdown: "Lead with reliability.",
   };
 

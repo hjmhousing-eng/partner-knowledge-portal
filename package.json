@@ -3,17 +3,24 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "node scripts/copy-pdf-worker.mjs && next dev --turbopack",
+    "build": "node scripts/copy-pdf-worker.mjs && next build",
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "^4.0.64",
+    "@ai-sdk/react": "^4.0.82",
+    "ai": "^7.0.79",
+    "box-typescript-sdk-gen": "^1.19.1",
     "next": "^16.3.3",
+    "pdfjs-dist": "^6.2.108",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-markdown": "^10.1.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^26.3.0",

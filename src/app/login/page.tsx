@@ -1,5 +1,8 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { loginPartner } from "@/lib/session/actions";
+import { demoReviewerEmails } from "@/lib/session/demoReviewers";
+import { loadDemoReviewers } from "@/lib/session/loadDemoReviewers";
 
 export default function LoginPage({
   searchParams,
@@ -8,34 +11,53 @@ export default function LoginPage({
 }) {
   return (
     <main>
-      <h1>Partner login</h1>
-      <p>Demo account: partner@example.com / partner</p>
-      <Suspense>
-        <LoginError searchParams={searchParams} />
-      </Suspense>
-      <form action={loginPartner}>
+      <div className="auth-card">
+        <h1>Partner login</h1>
         <p>
-          <label>
-            Email
-            <br />
-            <input
-              type="email"
-              name="email"
-              defaultValue="partner@example.com"
-              required
-            />
-          </label>
+          Demo emails map to Box App Users. As-User is the gate — not this
+          password.
         </p>
-        <p>
-          <label>
-            Password
-            <br />
-            <input type="password" name="password" required />
-          </label>
-        </p>
-        <button type="submit">Log in</button>
-      </form>
+        <Suspense fallback={<p>Loading accounts…</p>}>
+          <LoginForm searchParams={searchParams} />
+        </Suspense>
+      </div>
     </main>
+  );
+}
+
+async function LoginForm({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  await connection();
+  const emails = demoReviewerEmails(loadDemoReviewers());
+  const defaultEmail = emails[0] ?? "";
+
+  return (
+    <>
+      {emails.length > 0 ? (
+        <ul className="account-list">
+          {emails.map((email) => (
+            <li key={email}>{email}</li>
+          ))}
+        </ul>
+      ) : null}
+      <LoginError searchParams={searchParams} />
+      <form action={loginPartner}>
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          defaultValue={defaultEmail}
+          required
+        />
+        <label htmlFor="password">Password</label>
+        <input id="password" type="password" name="password" required />
+        <button type="submit">Enter the library</button>
+      </form>
+    </>
   );
 }
 
@@ -48,5 +70,5 @@ async function LoginError({
   if (!error) {
     return null;
   }
-  return <p>Email or password did not match.</p>;
+  return <p className="ask-error">Email or password did not match.</p>;
 }

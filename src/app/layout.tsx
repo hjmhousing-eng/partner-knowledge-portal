@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { body, display } from "./fonts";
+import { SiteShell } from "@/components/SiteShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Partner knowledge portal",
+  title: "Helios partner library",
   description:
-    "Pages in front of a Box library. Authors stay in Box; this site is the reader experience.",
+    "Public specs and partner enablement in front of a Box library.",
 };
 
 export default function RootLayout({
@@ -13,8 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={`${display.variable} ${body.variable}`}>
+      <body>
+        <SiteShell>{children}</SiteShell>
+      </body>
     </html>
   );
 }

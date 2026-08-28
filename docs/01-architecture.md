@@ -62,7 +62,7 @@ Two planes. Nothing important is copied off Box.
 - Function region pinned near Box (e.g. `iad1` if Box is US)
 - Rolling Releases 5% → 100%; rollback = previous deployment still live
 - Box webhook + Events API catch-up if the receiver was down
-- Downscoped preview tokens for PDFs (Box Preview), not anonymous shared links
+- Same-origin PDF stream after the gate; site viewer (not Box Preview chrome)
 - Optional Workflows: nightly “what changed” edition (phase 2)
 
 ## Connectivity honesty

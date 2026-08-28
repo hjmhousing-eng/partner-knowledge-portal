@@ -3,7 +3,7 @@
 Use the decision id. Keep answers short.
 
 **“Security: no file bytes on Vercel.”**  
-D1 + D10. Pages use metadata + text rep / Box Preview. Ask uses Box AI as a tool. Disk/Blob is not a store.
+D1 + D15. Markdown bodies are cached text. PDFs stream through the function after the gate into our viewer and are not stored on Blob. Ask uses Box AI / search as-user.
 
 **“No data leaves us-east-1.”**  
 Pin Functions to `iad1`. Gateway: constrain providers/regions if required. Box: US zone. Partner **bodies** can skip edge cache if legal treats HTML as data (D18). Shell can remain cached.
@@ -38,5 +38,5 @@ Shell still serves. Cached `doc:{id}` still serves last good body (SWR). Ask fai
 **“Make it fully agentic.”**  
 The site is not an agent. `/ask` is a tool-using turn. Agents that write back to Box would be Workflows + human confirm — different product (#1).
 
-**“Canary the content, not the app.”**  
-Content canary is Box: publish to a `staging` folder / metadata `status=draft`. App canary is Rolling Releases. Don’t mix them.
+**“We need signup and an admin to grant partners.”**  
+Later phase. New users default to public. Partner is a Box collaboration, not a row in an app DB. See `docs/04-dev-plan.md`.

@@ -1,0 +1,17 @@
+[
+  {
+    "email": "alex@example.com",
+    "password": "review-alex",
+    "boxUserId": "APP_USER_ID_ALEX"
+  },
+  {
+    "email": "sam@example.com",
+    "password": "review-sam",
+    "boxUserId": "APP_USER_ID_SAM"
+  },
+  {
+    "email": "riley@example.com",
+    "password": "review-riley",
+    "boxUserId": "APP_USER_ID_RILEY"
+  }
+]

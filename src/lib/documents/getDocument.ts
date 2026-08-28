@@ -1,8 +1,11 @@
 import type { FileId } from "../access/types";
 
+export type ArticleFormat = "markdown" | "pdf";
+
 export type ArticleBody = {
   fileId: FileId;
   title: string;
+  format: ArticleFormat;
   markdown: string;
 };
 

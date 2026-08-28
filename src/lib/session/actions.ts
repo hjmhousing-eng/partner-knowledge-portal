@@ -2,21 +2,25 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { DEMO_BOX_USER_ID } from "../fixtures/demoLibrary";
+import { authenticateDemoReviewer } from "./demoReviewers";
+import { loadDemoReviewers } from "./loadDemoReviewers";
 import { READER_COOKIE } from "./readSessionReader";
 
 export async function loginPartner(formData: FormData) {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const expectedEmail = process.env.DEMO_PARTNER_EMAIL ?? "partner@example.com";
-  const expectedPassword = process.env.DEMO_PARTNER_PASSWORD ?? "partner";
+  const reviewer = authenticateDemoReviewer(
+    email,
+    password,
+    loadDemoReviewers(),
+  );
 
-  if (email !== expectedEmail || password !== expectedPassword) {
+  if (!reviewer) {
     redirect("/login?error=1");
   }
 
   const jar = await cookies();
-  jar.set(READER_COOKIE, DEMO_BOX_USER_ID, {
+  jar.set(READER_COOKIE, reviewer.boxUserId, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",

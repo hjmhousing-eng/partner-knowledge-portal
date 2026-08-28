@@ -62,3 +62,14 @@ Comment in code at: `use cache` (why no userId), ACL helper (why 404), webhook (
 - Translating the corpus
 - Workflows Monday digest (phase 2 talking point)
 - Pixel-perfect design system
+- **Self-serve signup and an in-app admin for partner access** (later phase below)
+
+## Later phase — public-by-default users, admin-granted partner
+
+Not this take-home. When we add real accounts:
+
+1. Creating a user (App User or Box OAuth identity) grants **public audience only** — same as today’s logged-out reader plus a login. No collaboration on `partner/`.
+2. Partner access is an **admin action in Box**: collaborate that user on `partner/` or on specific files. The site does not grow an application DB for ACL.
+3. Optional later: a thin admin UI that calls the Box collaborations API. Until then, Box is the admin console.
+
+Demo logins stay a JSON map onto existing App Users.

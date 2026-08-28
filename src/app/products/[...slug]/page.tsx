@@ -1,13 +1,11 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { loadArticlePage } from "@/lib/articles/loadArticlePage";
+import { portalCatalog, portalCollaborations } from "@/lib/box/runtime";
 import { getCachedArticle } from "@/lib/documents/getCachedArticle";
-import {
-  fixtureCatalog,
-  fixtureCollaborations,
-} from "@/lib/fixtures/demoLibrary";
 import { readSessionReader } from "@/lib/session/readSessionReader";
+import { ArticleMarkdown } from "@/components/ArticleMarkdown";
+import { ArticlePdfViewer } from "@/components/ArticlePdfViewer";
 
 export default function ProductPage({
   params,
@@ -15,10 +13,7 @@ export default function ProductPage({
   params: Promise<{ slug: string[] }>;
 }) {
   return (
-    <main>
-      <p>
-        <Link href="/">Home</Link>
-      </p>
+    <main className="article-page">
       <Suspense fallback={<p>Loading article…</p>}>
         <Article params={params} />
       </Suspense>
@@ -36,8 +31,8 @@ async function Article({
   const result = await loadArticlePage({
     reader,
     slug: slug.join("/"),
-    catalog: fixtureCatalog,
-    collaborations: fixtureCollaborations,
+    catalog: portalCatalog(),
+    collaborations: portalCollaborations(),
     loadBody: getCachedArticle,
   });
 
@@ -45,10 +40,29 @@ async function Article({
     notFound();
   }
 
+  const body =
+    result.article.format === "pdf" ? (
+      <ArticlePdfViewer
+        fileId={result.article.fileId}
+        title={result.article.title}
+      />
+    ) : (
+      <ArticleMarkdown markdown={stripLeadingHeading(result.article.markdown)} />
+    );
+
   return (
     <article>
-      <h1>{result.article.title}</h1>
-      <pre>{result.article.markdown}</pre>
+      <header>
+        <p className="eyebrow">
+          {result.article.format === "pdf" ? "PDF" : "Article"}
+        </p>
+        <h1>{result.article.title}</h1>
+      </header>
+      {body}
     </article>
   );
+}
+
+function stripLeadingHeading(markdown: string) {
+  return markdown.replace(/^#\s.+\r?\n+/, "");
 }

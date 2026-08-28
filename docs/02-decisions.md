@@ -105,11 +105,11 @@ Format: **choice → rejected → why → curveball**. If they ask “why not X,
 - **Rejected:** Two Vercel projects; or everything behind login.
 - **Why:** One release path. Two cache lives (D4). Matches “we already have a site that’s half marketing, half gated.”
 
-### D15 — Render markdown (and Box Preview for PDFs) in the demo, not a full rendition pipeline
+### D15 — Render markdown as pages; PDFs through a site viewer
 
-- **Choice:** Demo corpus = a handful of `.md` + one PDF embed.
-- **Rejected:** LibreOffice conversion, custom DOCX HTML, syncing to MDX in git.
-- **Why:** Timebox. Production: Box Preview SDK or text representation. Git-as-CMS fights “authors stay in Box.”
+- **Choice:** Demo corpus = markdown articles + PDFs. Markdown is HTML in our shell. PDFs stream from Box after the **gate** and render in our viewer (PDF.js). Bytes are not stored in the identity-free article cache.
+- **Rejected:** Box Preview iframe (leaks Box chrome); text representation as the reader UI (destroys layout); LibreOffice/DOCX pipelines; syncing MDX in git.
+- **Why:** The site is the reading surface. Box stays the cabinet. Ask may still use text-rep later; the page must not.
 
 ### D16 — Fluid Compute is the default runtime, not a separate product we “add”
 

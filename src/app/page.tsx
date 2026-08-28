@@ -1,38 +1,59 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { logoutPartner } from "@/lib/session/actions";
-import { readSessionReader } from "@/lib/session/readSessionReader";
+import { portalCatalog } from "@/lib/box/runtime";
 
 export default function HomePage() {
   return (
     <main>
-      <h1>Partner knowledge portal</h1>
-      <p>
-        Box will hold the files. This slice uses a fixture library so sequence 1
-        is clickable: public page, partner 404 until login, then the battlecard.
-      </p>
-      <Suspense fallback={<nav>Loading session…</nav>}>
-        <HomeNav />
+      <section className="hero">
+        <p className="hero__kicker">Helios Controls · Channel</p>
+        <h1>Specs in public. The close stays behind the gate.</h1>
+        <p>
+          This is the partner website in front of the Box library. Public pages
+          are open. Battlecards, multipliers, and competitive notes follow Box
+          collaborations — unknown or forbidden URLs 404.
+        </p>
+      </section>
+      <Suspense fallback={<p>Loading the library…</p>}>
+        <PublicLibrary />
       </Suspense>
     </main>
   );
 }
 
-async function HomeNav() {
-  const reader = await readSessionReader();
-  const signedIn = reader.kind === "boxUser";
+async function PublicLibrary() {
+  const entries = await portalCatalog().list();
+  const publicEntries = entries.filter((entry) => entry.audience === "public");
 
   return (
-    <nav>
-      <Link href="/products/welcome">Welcome (public)</Link>
-      <Link href="/products/sku-a/battlecard">SKU-A battlecard (partner)</Link>
-      {signedIn ? (
-        <form action={logoutPartner}>
-          <button type="submit">Log out</button>
-        </form>
-      ) : (
-        <Link href="/login">Log in</Link>
-      )}
-    </nav>
+    <>
+      <div className="library-grid">
+        {publicEntries.map((entry) => (
+          <Link
+            key={entry.fileId}
+            href={`/products/${entry.slug}`}
+            className="library-card"
+          >
+            <span className="library-card__meta">
+              {entry.format === "pdf" ? "Public PDF" : "Public article"}
+            </span>
+            <h2>{entry.title}</h2>
+          </Link>
+        ))}
+      </div>
+      <aside className="partner-callout">
+        <h2>Distributors</h2>
+        <p>
+          Partner enablement is not listed here. Log in, then open the SKU-A
+          battlecard — or ask from the dock. Sam can open battlecards; Alex can
+          open pricing. Riley cannot.
+        </p>
+        <p>
+          <Link href="/login">Partner login</Link>
+          {" · "}
+          <Link href="/products/sku-a/battlecard">SKU-A battlecard</Link>
+        </p>
+      </aside>
+    </>
   );
 }
