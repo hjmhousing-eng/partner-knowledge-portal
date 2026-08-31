@@ -4,9 +4,9 @@ import { SiteShell } from "@/components/SiteShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Helios partner library",
+  title: "Helios Controls | Distributor resources",
   description:
-    "Public specs and partner enablement in front of a Box library.",
+    "Product literature, training, and confidential channel documents for authorized Helios distributors.",
 };
 
 export default function RootLayout({

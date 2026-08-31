@@ -6,13 +6,13 @@ import { readSessionReader } from "@/lib/session/readSessionReader";
 export default function AskPage() {
   return (
     <main className="ask-desk">
-      <p className="hero__kicker">Ask desk</p>
-      <h1>The library is already listening.</h1>
-      <p>
-        Use the dock — bottom right, or Ctrl+K — from any page. This desk is
-        the same widget, always on.
+      <p className="hero__kicker">Search</p>
+      <h1 className="page-title">Search</h1>
+      <p className="page-lead">
+        Search product literature from any page using the panel at the lower
+        right, or press Ctrl+K. Results only include documents you can open.
       </p>
-      <Suspense fallback={<p>Loading session…</p>}>
+      <Suspense fallback={null}>
         <AskHint />
       </Suspense>
     </main>
@@ -24,12 +24,16 @@ async function AskHint() {
   const reader = await readSessionReader();
   if (reader.kind === "anonymous") {
     return (
-      <p>
-        Logged out, ask only sees public articles.{" "}
-        <Link href="/login">Partner login</Link> unlocks battlecards the App
-        User can open.
+      <p className="page-lead">
+        You are browsing public literature.{" "}
+        <Link href="/login">Sign in</Link> to include documents assigned to
+        your account.
       </p>
     );
   }
-  return <p>Signed in. Partner files follow your Box collaborations.</p>;
+  return (
+    <p className="page-lead">
+      Signed in. Results follow the documents assigned to your account.
+    </p>
+  );
 }

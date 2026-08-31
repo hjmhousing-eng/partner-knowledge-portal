@@ -1,8 +1,5 @@
 import { Suspense } from "react";
-import { connection } from "next/server";
 import { loginPartner } from "@/lib/session/actions";
-import { demoReviewerEmails } from "@/lib/session/demoReviewers";
-import { loadDemoReviewers } from "@/lib/session/loadDemoReviewers";
 
 export default function LoginPage({
   searchParams,
@@ -12,52 +9,32 @@ export default function LoginPage({
   return (
     <main>
       <div className="auth-card">
-        <h1>Partner login</h1>
-        <p>
-          Demo emails map to Box App Users. As-User is the gate — not this
-          password.
-        </p>
-        <Suspense fallback={<p>Loading accounts…</p>}>
-          <LoginForm searchParams={searchParams} />
+        <h1>Sign in</h1>
+        <p>Use the email on file for your distributor account.</p>
+        <Suspense fallback={null}>
+          <LoginError searchParams={searchParams} />
         </Suspense>
+        <form action={loginPartner}>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            autoComplete="username"
+            required
+          />
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            required
+          />
+          <button type="submit">Continue</button>
+        </form>
       </div>
     </main>
-  );
-}
-
-async function LoginForm({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  await connection();
-  const emails = demoReviewerEmails(loadDemoReviewers());
-  const defaultEmail = emails[0] ?? "";
-
-  return (
-    <>
-      {emails.length > 0 ? (
-        <ul className="account-list">
-          {emails.map((email) => (
-            <li key={email}>{email}</li>
-          ))}
-        </ul>
-      ) : null}
-      <LoginError searchParams={searchParams} />
-      <form action={loginPartner}>
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          defaultValue={defaultEmail}
-          required
-        />
-        <label htmlFor="password">Password</label>
-        <input id="password" type="password" name="password" required />
-        <button type="submit">Enter the library</button>
-      </form>
-    </>
   );
 }
 

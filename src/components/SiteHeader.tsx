@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { SessionSkeleton } from "@/components/LibrarySkeletons";
 import { logoutPartner } from "@/lib/session/actions";
 import { readSessionReader } from "@/lib/session/readSessionReader";
 
@@ -10,14 +11,14 @@ export function SiteHeader() {
         <span className="brand__mark" aria-hidden />
         <span>
           <strong>Helios</strong>
-          <em>Partner library</em>
+          <em>Controls</em>
         </span>
       </Link>
       <nav className="site-nav">
         <Link href="/">Library</Link>
-        <Link href="/products/sku-a/overview">SKU-A</Link>
-        <Link href="/ask">Ask desk</Link>
-        <Suspense fallback={<span className="nav-session">Session…</span>}>
+        <Link href="/products/sku-a/overview">Products</Link>
+        <Link href="/ask">Search</Link>
+        <Suspense fallback={<SessionSkeleton />}>
           <SessionControls />
         </Suspense>
       </nav>
@@ -38,7 +39,7 @@ async function SessionControls() {
   }
   return (
     <Link href="/login" className="nav-login">
-      Partner login
+      Sign in
     </Link>
   );
 }

@@ -28,6 +28,7 @@ Seeded as **Helios Controls**: commercial HVAC / building-automation sold throug
 Partner_Application/          ← BOX_LIBRARY_FOLDER_ID
   public/                     ← no login (CCG reads bodies)
     sku-a--datasheet.pdf
+    sku-b--datasheet.pdf
     welcome.md
     sku-a--overview.md
     sku-b--overview.md

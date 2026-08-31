@@ -6,7 +6,7 @@ Partners read enablement as pages (`/products/sku-a/battlecard`), not as a folde
 
 ## Status
 
-Live at [partner-knowledge-portal.vercel.app](https://partner-knowledge-portal.vercel.app). Box webhook is registered on Custom App 2662859; HMAC is already in Vercel. GitHub `main` is behind this working tree until we commit and push.
+Live at [partner-knowledge-portal.vercel.app](https://partner-knowledge-portal.vercel.app). Box webhook is registered on Custom App 2662859; HMAC is already in Vercel.
 
 ## Vocabulary
 

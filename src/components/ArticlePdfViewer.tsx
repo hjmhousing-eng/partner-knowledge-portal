@@ -18,6 +18,7 @@ export function ArticlePdfViewer({
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [pageLabel, setPageLabel] = useState("");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -26,6 +27,9 @@ export function ArticlePdfViewer({
     }
     let cancelled = false;
     host.replaceChildren();
+    setReady(false);
+    setPageLabel("");
+    setError(null);
 
     (async () => {
       try {
@@ -60,6 +64,9 @@ export function ArticlePdfViewer({
           if (cancelled) {
             return;
           }
+          if (pageNumber === 1) {
+            setReady(true);
+          }
         }
         setPageLabel(
           pdf.numPages === 1 ? "1 page" : `${pdf.numPages} pages`,
@@ -88,8 +95,18 @@ export function ArticlePdfViewer({
   }
 
   return (
-    <div className="pdf-frame">
-      <div ref={hostRef} className="pdf-pages" />
+    <div className="pdf-frame" aria-busy={!ready}>
+      {ready ? null : (
+        <div className="pdf-pages" aria-hidden>
+          <div className="skeleton skeleton--page" />
+          <div className="skeleton skeleton--page skeleton--page-short" />
+        </div>
+      )}
+      <div
+        ref={hostRef}
+        className="pdf-pages"
+        hidden={!ready}
+      />
       {pageLabel ? <p className="pdf-frame__hint">{pageLabel}</p> : null}
     </div>
   );

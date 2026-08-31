@@ -72,25 +72,24 @@ export function AskWidget() {
         id={panelId}
         hidden={!open}
         role="dialog"
-        aria-label="Ask the library"
+        aria-label="Search the library"
       >
         <header className="ask-panel__head">
           <div>
-            <p className="ask-panel__kicker">Always on</p>
-            <h2>Ask the library</h2>
+            <p className="ask-panel__kicker">Library search</p>
+            <h2>Search</h2>
           </div>
           <button type="button" className="ask-panel__close" onClick={toggle}>
             Close
           </button>
         </header>
         <p className="ask-panel__hint">
-          Answers follow this session&apos;s Box access. Citations are site
-          paths. Not cached.
+          Answers only include documents you can open.
         </p>
         <div className="ask-log" ref={logRef}>
           {messages.length === 0 ? (
             <p className="ask-empty">
-              Try “What is SKU-A?” or, after login, competitor handling.
+              Try a product name, spec, or program question.
             </p>
           ) : null}
           {messages.map((message) => (
@@ -111,11 +110,10 @@ export function AskWidget() {
               })}
             </div>
           ))}
-          {busy ? <p className="ask-typing">Listening to the library…</p> : null}
+          {busy ? <p className="ask-typing">Searching…</p> : null}
           {error ? (
             <p className="ask-error">
-              Ask failed. Set AI_GATEWAY_API_KEY locally or use Gateway OIDC on
-              Vercel.
+              Search is unavailable right now. Try again in a moment.
             </p>
           ) : null}
         </div>
@@ -140,7 +138,7 @@ export function AskWidget() {
             value={input}
             onChange={(event) => setInput(event.target.value)}
             disabled={busy}
-            placeholder="Ask Helios…"
+            placeholder="Search the library"
             autoComplete="off"
           />
           <button type="submit" disabled={busy}>
@@ -155,8 +153,7 @@ export function AskWidget() {
         aria-expanded={open}
         aria-controls={panelId}
       >
-        <span className="ask-fab__pulse" aria-hidden />
-        <span className="ask-fab__label">{open ? "Hide ask" : "Ask"}</span>
+        <span className="ask-fab__label">{open ? "Close" : "Search"}</span>
         <kbd>Ctrl K</kbd>
       </button>
     </div>

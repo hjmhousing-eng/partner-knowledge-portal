@@ -6,6 +6,8 @@ import { getCachedArticle } from "@/lib/documents/getCachedArticle";
 import { readSessionReader } from "@/lib/session/readSessionReader";
 import { ArticleMarkdown } from "@/components/ArticleMarkdown";
 import { ArticlePdfViewer } from "@/components/ArticlePdfViewer";
+import { ArticleSkeleton } from "@/components/LibrarySkeletons";
+import { documentKind } from "@/lib/box/slug";
 
 export default function ProductPage({
   params,
@@ -14,7 +16,7 @@ export default function ProductPage({
 }) {
   return (
     <main className="article-page">
-      <Suspense fallback={<p>Loading article…</p>}>
+      <Suspense fallback={<ArticleSkeleton />}>
         <Article params={params} />
       </Suspense>
     </main>
@@ -54,7 +56,7 @@ async function Article({
     <article>
       <header>
         <p className="eyebrow">
-          {result.article.format === "pdf" ? "PDF" : "Article"}
+          {documentKind(slug.join("/"), result.article.format)}
         </p>
         <h1>{result.article.title}</h1>
       </header>
