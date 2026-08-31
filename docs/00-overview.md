@@ -12,6 +12,7 @@ Box already holds the files. The existing portal is a weak website. This app put
 | System shape | [01-architecture.md](./01-architecture.md) |
 | Build order | [04-dev-plan.md](./04-dev-plan.md) |
 | Ops questions | [05-operations.md](./05-operations.md) |
+| Demo script | [06-demo-script.md](./06-demo-script.md) |
 
 **Vercel pieces in this MVP:**
 

@@ -1,21 +1,37 @@
-import { Suspense } from "react";
-import { LibraryCatalog } from "@/components/LibraryCatalog";
-import { CatalogSkeleton } from "@/components/LibrarySkeletons";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <main>
-      <section className="library-intro">
+    <main className="home">
+      <section className="home-hero">
         <p className="hero__kicker">Distributor portal</p>
-        <h1>Resource library</h1>
+        <h1>The desk for the job on the roof</h1>
         <p>
-          Specs, program documents, and training for Helios Controls channel
-          partners. Sign in to see materials assigned to your account.
+          Helios Controls ships packaged RTU and AHU sequences through the
+          channel. This site is the reading surface. Authors stay in Box.
         </p>
       </section>
-      <Suspense fallback={<CatalogSkeleton />}>
-        <LibraryCatalog />
-      </Suspense>
+      <div className="home-paths">
+        <Link href="/library" className="home-path">
+          <span className="home-path__meta">Browse</span>
+          <strong>Library</strong>
+          <span>Datasheets, overviews, and the documents on your account.</span>
+        </Link>
+        <Link href="/?ask=1" className="home-path">
+          <span className="home-path__meta">Ask</span>
+          <strong>Search</strong>
+          <span>
+            Type in the bar above. We only answer from files you can open.
+          </span>
+        </Link>
+        <Link href="/login" className="home-path">
+          <span className="home-path__meta">Account</span>
+          <strong>Sign in</strong>
+          <span>
+            Open pricing, battlecards, and install guides for your branch.
+          </span>
+        </Link>
+      </div>
     </main>
   );
 }

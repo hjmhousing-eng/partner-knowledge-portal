@@ -1,17 +1,32 @@
 import { Suspense } from "react";
-import { SiteHeader } from "./SiteHeader";
+import { SearchProvider } from "./SearchContext";
+import { SearchSidebar } from "./SearchSidebar";
+import { SearchToggle } from "./SearchToggle";
 import { SiteFooter } from "./SiteFooter";
-import { AskWidget } from "./AskWidget";
+import { SiteHeader } from "./SiteHeader";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="shell">
-      <SiteHeader />
-      {children}
-      <SiteFooter />
-      <Suspense fallback={null}>
-        <AskWidget />
-      </Suspense>
-    </div>
+    <Suspense
+      fallback={
+        <div className="shell">
+          <SiteHeader search={false} />
+          {children}
+          <SiteFooter />
+        </div>
+      }
+    >
+      <SearchProvider>
+        <div className="shell">
+          <SiteHeader />
+          <div className="app-frame">
+            {children}
+            <SearchSidebar />
+          </div>
+          <SiteFooter />
+          <SearchToggle />
+        </div>
+      </SearchProvider>
+    </Suspense>
   );
 }

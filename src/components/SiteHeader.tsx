@@ -1,10 +1,15 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { SearchBar } from "./SearchBar";
 import { SessionSkeleton } from "@/components/LibrarySkeletons";
 import { logoutPartner } from "@/lib/session/actions";
 import { readSessionReader } from "@/lib/session/readSessionReader";
 
-export function SiteHeader() {
+export function SiteHeader({
+  search = true,
+}: {
+  search?: boolean;
+}) {
   return (
     <header className="site-header">
       <Link href="/" className="brand">
@@ -14,10 +19,19 @@ export function SiteHeader() {
           <em>Controls</em>
         </span>
       </Link>
+      {search ? (
+        <SearchBar />
+      ) : (
+        <div className="header-search">
+          <input disabled placeholder="Ask the library" />
+          <button type="button" disabled>
+            Ask
+          </button>
+        </div>
+      )}
       <nav className="site-nav">
-        <Link href="/">Library</Link>
+        <Link href="/library">Library</Link>
         <Link href="/products/sku-a/overview">Products</Link>
-        <Link href="/ask">Search</Link>
         <Suspense fallback={<SessionSkeleton />}>
           <SessionControls />
         </Suspense>

@@ -12,11 +12,11 @@ npm test
 npm run dev
 ```
 
-1. `/products/welcome` — public, no login.
+1. `/` — landing. `/library` — catalog. `/products/welcome` — public, no login.
 2. `/products/sku-a/battlecard` while logged out — 404.
 3. `/login` with an account from `demo-reviewers.json` (see Box library below). Fixtures-only: `partner@example.com` / `partner`.
 4. Open the battlecard again — 200 for Alex and Sam; still 404 for Riley.
-5. `/ask` — public questions work logged out; partner pricing only after Alex logs in. Needs `AI_GATEWAY_API_KEY` locally.
+5. Type in the header search — public questions work logged out; partner pricing only after Alex logs in. Needs `AI_GATEWAY_API_KEY` locally.
 6. On a datasheet, **Draft leave-behind**. Logged out it stays public. After Alex, a battlecard brief can include competitive notes.
 
 Live: [https://partner-knowledge-portal.vercel.app](https://partner-knowledge-portal.vercel.app)
@@ -92,6 +92,7 @@ Riley is collaborated on nothing under `partner/`. Public files are not collabor
 | `docs/03-sequences.md` | Request paths |
 | `docs/04-dev-plan.md` | Build order |
 | `docs/05-operations.md` | Ops questions |
+| `docs/06-demo-script.md` | Live walkthrough |
 
 ## License
 

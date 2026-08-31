@@ -9,7 +9,7 @@ export default function NotFound() {
         It may have been moved, or it may not be assigned to your account.
       </p>
       <p>
-        <Link href="/">Return to the library</Link>
+        <Link href="/library">Return to the library</Link>
       </p>
     </main>
   );
