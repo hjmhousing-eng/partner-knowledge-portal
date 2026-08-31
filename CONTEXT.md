@@ -30,7 +30,7 @@ Use these terms in code, tests, and commits. Avoid the synonyms in parentheses.
 4. Ask-the-library is not cached. Tools search Box as-user.
 5. Box file versions are not the site rollback. Vercel deployments are.
 
-Binding write-ups: [`docs/adr/`](./docs/adr/) and the interview crib [`docs/02-decisions.md`](./docs/02-decisions.md).
+Binding write-ups: [`docs/adr/`](./docs/adr/) and [`docs/02-decisions.md`](./docs/02-decisions.md).
 
 ## Test seams (confirm before adding tests)
 

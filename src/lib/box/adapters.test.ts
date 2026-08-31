@@ -42,6 +42,9 @@ const port: BoxLibraryPort = {
   async downloadPdf() {
     return null;
   },
+  async askFiles() {
+    return null;
+  },
 };
 
 describe("boxCollaborations", () => {

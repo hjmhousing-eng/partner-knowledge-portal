@@ -1,6 +1,6 @@
 ## Partner knowledge portal
 
-Box is the CMS. This app is the site. Vocabulary is in `CONTEXT.md`. Decisions are in `docs/adr/`. Interview sequences are in `docs/03-sequences.md`.
+Box is the CMS. This app is the site. Vocabulary is in `CONTEXT.md`. Decisions are in `docs/adr/`. Request paths are in `docs/03-sequences.md`. Write like this is the client repo: no take-home, interview, or assessment framing.
 
 ### Before changing code
 
@@ -14,7 +14,7 @@ Comments record *why* (invariants), not what the syntax does.
 
 ### Commits
 
-History is part of the take-home. Prefer `feat:` / `fix:` / `docs:` with the invariant in the body when the diff is a decision (cache, ACL, webhook).
+Prefer `feat:` / `fix:` / `docs:` with the invariant in the body when the diff is a decision (cache, ACL, webhook). Unslop the message before committing.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

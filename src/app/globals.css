@@ -367,7 +367,55 @@ main {
 }
 
 .article-page header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.leave-behind {
+  margin: 0 0 1.75rem;
+  max-width: 42rem;
+}
+
+.leave-behind__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+}
+
+.leave-behind__bar p {
+  margin: 0;
+  color: var(--paper-dim);
+  font-size: 0.92rem;
+  max-width: 28rem;
+}
+
+.leave-behind__bar button {
+  appearance: none;
+  border: 1px solid var(--copper);
+  background: transparent;
+  color: var(--copper);
+  font: inherit;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+}
+
+.leave-behind__bar button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.leave-behind__draft {
+  margin-top: 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+}
+
+.leave-behind__draft h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.05rem;
 }
 
 .article-page .eyebrow {

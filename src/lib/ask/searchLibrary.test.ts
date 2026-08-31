@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  askBoxAiSources,
   citationHref,
   loadAskPassages,
   searchLibrary,
@@ -230,5 +231,115 @@ describe("loadAskPassages", () => {
       },
     });
     expect(passages).toEqual([]);
+  });
+});
+
+describe("askBoxAiSources", () => {
+  const publicWelcome: CatalogEntry = {
+    fileId: "file_public",
+    slug: "welcome",
+    audience: "public",
+    title: "Welcome",
+    format: "markdown",
+  };
+  const partnerBattlecard: CatalogEntry = {
+    fileId: "file_1",
+    slug: "sku-a/battlecard",
+    audience: "partner",
+    title: "SKU-A battlecard",
+    format: "markdown",
+  };
+  const catalog: ArticleCatalog = {
+    async bySlug() {
+      return null;
+    },
+    async byFileId(fileId) {
+      if (fileId === "file_public") {
+        return publicWelcome;
+      }
+      if (fileId === "file_1") {
+        return partnerBattlecard;
+      }
+      return null;
+    },
+    async list() {
+      return [publicWelcome, partnerBattlecard];
+    },
+  };
+  const janeOnly: CollaborationLookup = {
+    async hasAccess(boxUserId, fileId) {
+      return boxUserId === "user_jane" && fileId === "file_1";
+    },
+  };
+
+  it("asks Box AI as CCG for public files and omits partner ids", async () => {
+    const asked: Array<{ fileIds: string[]; asUserId: string | null }> = [];
+    const result = await askBoxAiSources({
+      reader: { kind: "anonymous" },
+      fileIds: ["file_public", "file_1"],
+      question: "What is SKU-A?",
+      catalog,
+      collaborations: janeOnly,
+      boxAi: {
+        async ask({ fileIds, asUserId }) {
+          asked.push({ fileIds: [...fileIds], asUserId });
+          return "Public overview only.";
+        },
+      },
+    });
+
+    expect(asked).toEqual([
+      { fileIds: ["file_public"], asUserId: null },
+    ]);
+    expect(result).toEqual({
+      answer: "Public overview only.",
+      sources: [
+        {
+          fileId: "file_public",
+          title: "Welcome",
+          slug: "welcome",
+          href: "/products/welcome",
+        },
+      ],
+    });
+  });
+
+  it("asks Box AI as-user for partner files the reader can open", async () => {
+    const asked: Array<{ fileIds: string[]; asUserId: string | null }> = [];
+    const result = await askBoxAiSources({
+      reader: { kind: "boxUser", boxUserId: "user_jane" },
+      fileIds: ["file_1"],
+      question: "Competitor handling?",
+      catalog,
+      collaborations: janeOnly,
+      boxAi: {
+        async ask({ fileIds, asUserId }) {
+          asked.push({ fileIds: [...fileIds], asUserId });
+          return "Lead with uptime.";
+        },
+      },
+    });
+
+    expect(asked).toEqual([
+      { fileIds: ["file_1"], asUserId: "user_jane" },
+    ]);
+    expect(result?.sources[0]?.href).toBe("/products/sku-a/battlecard");
+  });
+
+  it("returns null when Box AI has no allowed files or no answer", async () => {
+    await expect(
+      askBoxAiSources({
+        reader: { kind: "anonymous" },
+        fileIds: ["file_1"],
+        question: "pricing",
+        catalog,
+        collaborations: janeOnly,
+        boxAi: {
+          async ask() {
+            throw new Error("must not call Box AI");
+          },
+        },
+      }),
+    ).resolves.toBeNull();
   });
 });

@@ -82,6 +82,25 @@ export async function revalidateDocumentTag(fileId: FileId) {
   revalidateTag(`doc:${fileId}`, "max");
 }
 
+export function portalBoxAi() {
+  return {
+    async ask(input: {
+      fileIds: readonly FileId[];
+      question: string;
+      asUserId: string | null;
+    }) {
+      if (!isBoxConfigured()) {
+        return null;
+      }
+      return getSdkLibraryPort().askFiles(
+        input.fileIds,
+        input.question,
+        input.asUserId,
+      );
+    },
+  };
+}
+
 export async function downloadPortalPdf(
   fileId: FileId,
   asUserId: string | null,

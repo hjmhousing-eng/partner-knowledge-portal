@@ -1,5 +1,5 @@
 ---
-description: Portal invariants, vocabulary, and commit comments for this take-home.
+description: Portal invariants, vocabulary, and how we write commits and comments.
 alwaysApply: true
 ---
 
@@ -9,6 +9,8 @@ Read `CONTEXT.md` before changing behavior. If a change contradicts `docs/adr/`,
 
 Use glossary terms from `CONTEXT.md` (library, article, shell, body, as-user, audience, gate).
 
-Comments in code mark deliberate decisions (cache key, 404 vs 403, webhook `revalidateTag(tag, "max")`, Gateway fallback). One or two sentences. No narration of what the next line does.
+Write as a client delivery. Do not mention a take-home, interview, assessment, rubric, or “building to a brief.” README, ADRs, comments, and commit messages describe the product and the reasons.
 
-Commits are small and public-history-friendly: one seam per commit when possible. Do not skip hooks. Do not commit `.env` or Box tokens.
+Comments mark deliberate decisions (cache key, 404 vs 403, webhook `revalidateTag(tag, "max")`, Gateway fallback). One or two sentences. No narration of what the next line does. Run comments through unslop before keeping them.
+
+Commits are small: one seam per commit when possible. Prefer `feat:` / `fix:` / `docs:` with the invariant in the body when the diff is a decision (cache, ACL, webhook). Run the subject and body through unslop. Do not skip hooks. Do not commit `.env` or Box tokens.

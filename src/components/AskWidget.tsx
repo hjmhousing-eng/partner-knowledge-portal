@@ -113,7 +113,7 @@ export function AskWidget() {
           {busy ? <p className="ask-typing">Searching…</p> : null}
           {error ? (
             <p className="ask-error">
-              Search is unavailable right now. Try again in a moment.
+              Search is rate-limited right now. Wait a minute and try again.
             </p>
           ) : null}
         </div>

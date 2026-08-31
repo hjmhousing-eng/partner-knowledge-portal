@@ -22,7 +22,7 @@ Two planes. Nothing important is copied off Box.
 
 ## What stays vs what moves
 
-| Stays (name it in the interview) | Moves onto Vercel | Why |
+| Stays in Box | Moves onto Vercel | Why |
 |---|---|---|
 | Files and versions | Page rendering | Box is the CMS |
 | Permissions / collaborations | Session cookie + SSO mapping | One ACL, not two |
@@ -31,7 +31,7 @@ Two planes. Nothing important is copied off Box.
 | IdP (Okta / Entra) | Login UI and route gates | Identity already exists |
 | — | Webhook receiver + `revalidateTag` | Box cannot invalidate a Next.js cache |
 
-## Logical components (demo)
+## Logical components
 
 | Component | Responsibility |
 |---|---|
@@ -44,7 +44,7 @@ Two planes. Nothing important is copied off Box.
 | `app/api/ask/route.ts` | `streamText` through Gateway; tools: Box search, Box AI Q&A. |
 | Box metadata template `portalDoc` | `slug`, `title`, `audience` (`public` \| `partner`), `product`, `nav_group` |
 
-## Cache contract (memorize this)
+## Cache contract
 
 | Data | Cached? | Tag | Invalidated by |
 |---|---|---|---|
@@ -56,7 +56,7 @@ Two planes. Nothing important is copied off Box.
 
 **Invariant:** a `use cache` function must not take `userId` as an argument for document bodies. Same bytes for every authorized reader. Authorization is a **gate around** the cache, not **inside** it.
 
-## Production additions (talk, don’t have to build)
+## Production additions (not all built yet)
 
 - SSO (Okta) → Box token as the user (`as-user` or OAuth)
 - Function region pinned near Box (e.g. `iad1` if Box is US)
@@ -67,4 +67,4 @@ Two planes. Nothing important is copied off Box.
 
 ## Connectivity honesty
 
-Box’s API is public HTTPS (`api.box.com`). **Secure Compute / VPC peering is not required** to reach Box. Mention it only if *other* systems stay in a VPC (internal search, entitlements). Don’t pretend Box is in the customer’s VPC.
+Box’s API is public HTTPS (`api.box.com`). **Secure Compute / VPC peering is not required** to reach Box. Use those only if *other* systems stay in a VPC (internal search, entitlements). Box is not in the customer’s VPC.

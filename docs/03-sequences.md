@@ -38,7 +38,7 @@ sequenceDiagram
   N-->>U: Stream article body into shell
 ```
 
-**If they ask “where is the user?”** Only in the Box ACL call and the session. Not in `getDocument`.
+The reader identity lives in the session and the Box ACL call. It is not an argument to `getDocument`.
 
 **If Box is slow:** shell already painted; body streams. Next visitor hits `doc:{id}` cache.
 
@@ -68,9 +68,9 @@ sequenceDiagram
   Note over C: Next GET serves stale then refreshes (SWR)
 ```
 
-**If they ask “why not `updateTag`?”** Webhooks are Route Handlers. `updateTag` is Server Actions only. `revalidateTag(tag, 'max')` is the webhook primitive.
+Webhooks are Route Handlers. `updateTag` is Server Actions only. `revalidateTag(tag, 'max')` is the webhook primitive.
 
-**If they ask “preview env?”** Same webhook URL per deployment is wrong. Prod webhook → prod. Preview uses a sandbox folder or no webhook (TTL only). Call that a known limitation if you only register one webhook.
+One webhook URL per environment. Prod webhook → prod. Preview should use a sandbox folder or skip the webhook (TTL only). Today one webhook is registered on prod.
 
 ---
 
@@ -108,7 +108,7 @@ sequenceDiagram
 
 **Cost/failover:** Gateway retries a second provider if the writer fails mid-stream; tools do not change.
 
-**If Box AI is off in the demo tenant:** tool falls back to text representation of the shortlist (still as-user, still no Blob copy). Say that in limitations.
+If Box AI returns nothing, the tool falls back to a text representation of the shortlist (still as-user, still no Blob copy).
 
 ---
 
@@ -126,7 +126,7 @@ sequenceDiagram
   Dev->>Git: PR: nav + ask-box copy
   Git->>P: Preview URL
   Note over P: Same Box library (or sandbox folder)
-  Dev->>P: Click through canned pages + ask
+  Dev->>P: Click through pages + ask
   Dev->>Git: Merge
   Git->>Prod: New deployment, previous still live
   Prod->>Prod: Canary 5% then 100%

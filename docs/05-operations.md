@@ -1,4 +1,4 @@
-# Live-session curveballs (pre-answers)
+# Operations questions
 
 Use the decision id. Keep answers short.
 
@@ -21,10 +21,10 @@ D2. Hubs are not a partner website and don’t give preview/canary of the experi
 D5. That’s how you leak. Public files only.
 
 **“Why didn’t you use Workflows / Eve?”**  
-D12. Wrong failure mode.
+D12. Wrong failure mode. Ask is one turn. Workflows is a nightly edition, later.
 
 **“Preview sees tomorrow’s unreleased PDF.”**  
-D13. Separate Box folder + credentials for preview. Known gap if demo shares one folder.
+D13. Separate Box folder + credentials for preview. Known gap while prod and preview share one folder.
 
 **“Webhook storms / retries.”**  
 D8. Verify signature, idempotent event ids, fetch file again, narrow tags.
@@ -36,7 +36,7 @@ D4/D5. Cached payload has no PII. Gate runs every time. Partner nav is not one g
 Shell still serves. Cached `doc:{id}` still serves last good body (SWR). Ask fails closed. We do not fail open on ACL (if ACL call fails, 404/503, never 200).
 
 **“Make it fully agentic.”**  
-The site is not an agent. `/ask` is a tool-using turn. Agents that write back to Box would be Workflows + human confirm — different product (#1).
+The site is not an agent. `/ask` is a tool-using turn. Agents that write back to Box would be Workflows + human confirm — a different product.
 
 **“We need signup and an admin to grant partners.”**  
 Later phase. New users default to public. Partner is a Box collaboration, not a row in an app DB. See `docs/04-dev-plan.md`.

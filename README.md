@@ -2,7 +2,7 @@
 
 A Vercel-hosted site in front of a Box library. Authors stay in Box. Readers get pages, previews of site changes, and ask-the-library that cannot see files they cannot open.
 
-This repository is a Solutions Architect take-home. Planning lives in [`docs/`](docs/00-overview.md). Sequence 1 runs against a fixture library until Box env vars are set.
+Planning lives in [`docs/`](docs/00-overview.md). Until Box env vars are set, the app serves a fixture library.
 
 ## Try it (fixtures)
 
@@ -14,11 +14,22 @@ npm run dev
 
 1. `/products/welcome` — public, no login.
 2. `/products/sku-a/battlecard` while logged out — 404.
-3. `/login` with a reviewer from `demo-reviewers.json` (see Box library below). Fixtures-only: `partner@example.com` / `partner`.
+3. `/login` with an account from `demo-reviewers.json` (see Box library below). Fixtures-only: `partner@example.com` / `partner`.
 4. Open the battlecard again — 200 for Alex and Sam; still 404 for Riley.
 5. `/ask` — public questions work logged out; partner pricing only after Alex logs in. Needs `AI_GATEWAY_API_KEY` locally.
+6. On a datasheet, **Draft leave-behind**. Logged out it stays public. After Alex, a battlecard brief can include competitive notes.
 
 Live: [https://partner-knowledge-portal.vercel.app](https://partner-knowledge-portal.vercel.app)
+
+## Acceptance checks
+
+| # | User | Question / action | Must | Must not |
+|---|---|---|---|---|
+| 1 | public | What is the Pulse Controller? | A public `/products/...` citation | Partner pricing or multipliers |
+| 2 | Alex | How do we handle Acme? | Battlecard path | Files outside the library |
+| 3 | logged out | `/products/sku-a/battlecard` | 404 | 200 |
+| 4 | any | Edit a public article in Box, refresh | New sentence without a redeploy | Stale body forever |
+| 5 | any | Kill `ASK_MODEL` / use a bad primary | Leave-behind or ask still answers via `ASK_FALLBACK_MODEL` | App rewrite |
 
 ## Box library
 
@@ -50,7 +61,7 @@ Partner_Application/          ← BOX_LIBRARY_FOLDER_ID
 
 Filenames use `--` for `/` in the URL (`sku-a--battlecard.md` → `/products/sku-a/battlecard`).
 
-### How reviewers get partner files
+### Demo partner logins
 
 Site login is not Box OAuth. Each demo email maps to an **App User** id; the gate calls Box As-User as that id.
 
@@ -74,11 +85,14 @@ Riley is collaborated on nothing under `partner/`. Public files are not collabor
 | Path | What |
 |---|---|
 | `CONTEXT.md` | Terms and invariants |
+| `docs/00-overview.md` | Planning index |
 | `docs/adr/` | Binding decisions |
-| `docs/02-decisions.md` | Why not the alternatives (interview) |
+| `docs/01-architecture.md` | System shape |
+| `docs/02-decisions.md` | Why not the alternatives |
 | `docs/03-sequences.md` | Request paths |
 | `docs/04-dev-plan.md` | Build order |
+| `docs/05-operations.md` | Ops questions |
 
 ## License
 
-Private take-home unless the repository visibility says otherwise.
+Private. Do not publish the library or credentials.

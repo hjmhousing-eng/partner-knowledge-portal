@@ -13,12 +13,12 @@ Ask-the-library tools call Box search and Box AI (or text representation) as-use
 
 ## Rejected
 
-Download files into OpenAI; Box AI only (no Vercel AI stack); Gateway on raw file bytes.
+Download files into OpenAI; Box AI only; Gateway on raw file bytes.
 
 ## Why
 
-Bytes and ACL stay in Box. Gateway is what the assessment grades for failover and cost.
+Bytes and ACL stay in Box. Gateway is the writer, failover, and spend.
 
 ## Consequence
 
-If Box AI is unavailable in the demo tenant, the ask tool falls back to text representation of the shortlist, still as-user.
+If Box AI is unavailable, the ask tool falls back to a text representation of the shortlist, still as-user.

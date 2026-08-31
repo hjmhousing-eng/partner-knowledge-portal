@@ -189,6 +189,31 @@ export function createSdkLibraryPort(): BoxLibraryPort {
         throw error;
       }
     },
+
+    async askFiles(fileIds, question, asUserId) {
+      if (fileIds.length === 0) {
+        return null;
+      }
+      try {
+        const actor = asUserId
+          ? client.withAsUserHeader(asUserId)
+          : client;
+        const mode =
+          fileIds.length === 1 ? "single_item_qa" : "multiple_item_qa";
+        const response = await actor.ai.createAiAsk({
+          mode,
+          prompt: question,
+          items: fileIds.map((id) => ({ id, type: "file" as const })),
+          includeCitations: true,
+        });
+        return response?.answer?.trim() ? response.answer : null;
+      } catch (error) {
+        if (isAccessDenied(error)) {
+          return null;
+        }
+        return null;
+      }
+    },
   };
 }
 

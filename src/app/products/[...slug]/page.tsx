@@ -7,6 +7,7 @@ import { readSessionReader } from "@/lib/session/readSessionReader";
 import { ArticleMarkdown } from "@/components/ArticleMarkdown";
 import { ArticlePdfViewer } from "@/components/ArticlePdfViewer";
 import { ArticleSkeleton } from "@/components/LibrarySkeletons";
+import { LeaveBehindDraft } from "@/components/LeaveBehindDraft";
 import { documentKind } from "@/lib/box/slug";
 
 export default function ProductPage({
@@ -60,6 +61,10 @@ async function Article({
         </p>
         <h1>{result.article.title}</h1>
       </header>
+      <LeaveBehindDraft
+        fileId={result.article.fileId}
+        title={result.article.title}
+      />
       {body}
     </article>
   );
