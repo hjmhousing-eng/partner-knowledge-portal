@@ -1,10 +1,10 @@
-import { BoxApiError } from "box-typescript-sdk-gen/lib/box/errors";
 import { BoxCcgAuth, BoxClient, CcgConfig } from "box-typescript-sdk-gen";
 import { readByteStream } from "box-typescript-sdk-gen/lib/internal/utils";
 import type { CatalogEntry } from "../articles/loadArticlePage";
 import type { ArticleBody } from "../documents/getDocument";
 import type { FileId } from "../access/types";
 import { boxLibraryFolderId } from "./config";
+import { isAccessDenied } from "./isAccessDenied";
 import type { BoxLibraryPort } from "./port";
 import {
   audienceFromFolderName,
@@ -48,19 +48,6 @@ function fileIdFromSearchEntry(entry: unknown): FileId | null {
     return isFileWithId(item) ? item.id : null;
   }
   return isFileWithId(entry) ? entry.id : null;
-}
-
-function isAccessDenied(error: unknown): boolean {
-  const status =
-    error instanceof BoxApiError
-      ? error.responseInfo.statusCode
-      : typeof error === "object" &&
-          error !== null &&
-          "responseInfo" in error
-        ? (error as { responseInfo?: { statusCode?: number } }).responseInfo
-            ?.statusCode
-        : undefined;
-  return status === 403 || status === 404;
 }
 
 const listOptions = {
