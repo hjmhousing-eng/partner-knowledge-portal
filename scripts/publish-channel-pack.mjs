@@ -117,8 +117,8 @@ async function brandPdf(title, subtitle, pages) {
       font: regular,
       color: muted,
     });
-    page.drawText("© Helios Controls. Channel use only.", {
-      x: 360,
+    page.drawText("© Helios Controls, 2026.", {
+      x: 400,
       y: 36,
       size: 8,
       font: regular,
@@ -129,137 +129,147 @@ async function brandPdf(title, subtitle, pages) {
 }
 
 const markdown = {
-  "welcome.md": `# Helios Controls distributor library
+  "welcome.md": `# Helios Controls product literature
 
-This portal is the published reading surface for Helios Controls channel literature. Use it for product selection, program rules, and training. Documents assigned to your distributor agreement appear after you sign in.
+Effective 1 September 2026. Helios Controls designs packaged DDC and air-handling equipment for commercial rooftops and indoor mechanical rooms. This set is the current engineer-ready literature for the Pulse Controller and SKU-B indoor air handlers.
 
-## What you will find
+## Pulse Controller
 
-- Public product overviews and datasheets suitable for sharing with consulting engineers and owners
-- Confidential battlecards, multipliers, and competitive notes for contracted distributors
-- Support and training calendars for the current program year
+A compact 24 VAC controller for packaged units through 40 tons. Factory sequences cover occupancy, economizer, and staged heat. BACnet MS/TP is a hardware option.
 
-Questions about a file that should be on your account go to your regional channel manager, not to the library search panel.
+## Indoor air handlers
+
+SKU-B double-wall units from 8,000 to 24,000 CFM, with optional factory-mounted Pulse controls.
+
+## Support and training
+
+Warranty and parts run through the distributor of record. Open-enrollment classes are listed on the public training calendar. Territory and contract questions go to your Helios channel manager.
 `,
-  "sku-a--overview.md": `# SKU-A Pulse Controller
+  "sku-a--overview.md": `# Pulse Controller
 
-The Pulse Controller is a compact DDC controller for packaged rooftop and indoor air handlers up to 40 tons. It ships with factory sequences for occupied/unoccupied, economizer, and staged heat, and it exposes BACnet MS/TP for supervisory integration.
+Effective 1 September 2026. The Pulse Controller is a compact DDC controller for packaged rooftop and indoor air handlers up to 40 tons. It ships with factory sequences for occupied and unoccupied operation, economizer, and staged heat. BACnet MS/TP is available as a hardware option for supervisory integration.
 
 ## Typical applications
 
-- Replacement of legacy unitary controllers on RTUs
-- New packaged AHUs sold through Helios air-handler lines
-- Light retrofit where a full plant controller is not justified
+- Replacement of legacy unitary controllers on rooftop units
+- New packaged air handlers sold with Helios equipment
+- Light retrofit where a full plant controller is not required
 
-## Differentiation
+## What an engineer should verify
 
-Pulse ships with tested sequences and a documented I/O map. Commissioning time on a standard RTU is typically under two hours when the installing contractor follows the installation guide. For competitive displacement versus Acme UC-90, lead with sequence completeness and native BACnet—not list price.
+Pulse includes tested sequences and a published I/O map. On a standard rooftop, commissioning is typically under two hours when the installing contractor follows the installation guide. Native BACnet/IP is not in this hardware generation.
 
-Share the public datasheet with the engineer of record. Multipliers and objection handling stay on your signed-in library.
+The datasheet (HC-A-DS-26) is approved for the engineer of record and the owner. Authorized distributor pricing is issued separately.
 `,
-  "sku-b--overview.md": `# SKU-B Air Handler
+  "sku-b--overview.md": `# Indoor air handler
 
-SKU-B is a double-wall indoor air handler from 8,000 to 24,000 CFM with factory-mounted Pulse controls as an option. Casings are 2-inch foam-injected, and coil sections are designed for 6-row chilled water or DX.
+Effective 1 September 2026. SKU-B is a double-wall indoor air handler from 8,000 to 24,000 CFM. Casings are 2-inch foam-injected. Coil sections accept 6-row chilled water or DX. Factory-mounted Pulse controls are optional.
 
 ## When to specify
 
-- Indoor mechanical rooms where sound and leakage matter
-- Jobs that already standardize on Pulse for rooftops
+- Indoor mechanical rooms where casing leakage and sound matter
+- Projects that already standardize on Pulse for rooftops
 - Retrofits replacing uninsulated built-up units
 
 ## Documentation
 
-The public datasheet covers performance envelopes and connection sizes. Coil selections and sound data remain in the partner library because they are configuration-specific.
+Datasheet HC-B-DS-26 covers performance envelopes and connection sizes. Certified coil selections and sound power are issued with the configured selection, not on the public sheet.
 `,
-  "support--getting-started.md": `# Getting started with Helios support
+  "support--getting-started.md": `# Helios product support
 
-Warranty registration, replacement parts, and technical support run through the distributor of record.
+Effective 1 September 2026. Warranty registration, replacement parts, and technical support run through the distributor of record.
 
 1. Register equipment at commissioning using the serial label on the control enclosure.
-2. Open parts orders against the job number in the Helios order portal.
+2. Open parts orders against the job number in the Helios order system.
 3. For sequence questions, attach the as-built I/O list before calling product support.
 
-On-site support is dispatched only after the installing contractor has completed the commissioning checklist in the installation guide.
+On-site support is dispatched only after the installing contractor completes the commissioning checklist in the installation guide.
 `,
   "company--channel-program.md": `# Authorized distributor program
 
-Helios sells commercial HVAC and controls exclusively through contracted distributors. The program covers stocking, project registration, and marketing fund eligibility.
+Effective 1 September 2026. Helios sells commercial HVAC and controls exclusively through contracted distributors. The program covers stocking, project registration, and marketing-fund eligibility.
 
-## Obligations
+## Distributor obligations
 
 - Maintain trained counter and outside sales coverage in the contracted territory
 - Register projects above $25,000 equipment value before quoting special pricing
 - Keep confidential literature off public websites and bid rooms
 
-Program updates publish here and in the quarterly enablement playbook. Territory questions go to your channel manager.
+Program updates appear in this literature set and in the quarterly enablement playbook issued to contracted houses. Territory questions go to the regional channel manager.
 `,
-  "training--public-calendar.md": `# Public training calendar
+  "training--public-calendar.md": `# Training calendar
 
-Open enrollment classes are listed below. Partner-only labs and pricing workshops require sign-in.
+Effective 1 September 2026. Open-enrollment sessions are listed below. Labs that cover authorized pricing are scheduled separately with your account team.
 
 | Date | Session | Format |
 |---|---|---|
-| 12 Sep 2026 | Pulse Controller fundamentals | Virtual, 3 hours |
-| 24 Sep 2026 | Air handler selection | In person, Chicago |
-| 8 Oct 2026 | BACnet integration lab | Virtual, 2 hours |
+| 12 September 2026 | Pulse Controller fundamentals | Virtual, 3 hours |
+| 24 September 2026 | Air handler selection | In person, Chicago |
+| 8 October 2026 | BACnet MS/TP integration | Virtual, 2 hours |
 
-Register through your Helios account team. Seats are first-come for public sessions.
+Register through your Helios account team. Public seats are first-come.
 `,
-  "sku-a--battlecard.md": `# SKU-A Pulse Controller battlecard
+  "sku-a--battlecard.md": `# Pulse Controller — sales brief
 
-**Positioning:** The fastest path from a packaged unit to a documented BACnet point list.
+Confidential. Authorized distributors only. Effective 1 September 2026.
 
-**Primary competitor:** Acme UC-90. UC-90 is cheaper at list. It ships without economizer sequences and requires a paid tools license for point mapping.
+**Positioning:** Fastest path from a packaged unit to a documented BACnet point list.
+
+**Primary competitor:** Acme UC-90. Lower list. Ships without economizer sequences. Point mapping requires a paid tools license.
 
 **Talk track**
 
 1. Ask whether the engineer specified sequences or only a controller.
-2. Show the Pulse I/O map and factory economizer state chart (installation guide).
-3. Do not lead with multiplier. If they press price, use the authorized band in the pricing sheet.
+2. Show the Pulse I/O map and factory economizer state chart in the installation guide.
+3. Do not open with multiplier. If price comes up, use the authorized band on the pricing sheet.
 
-**Landmines:** Do not promise native BACnet/IP in this hardware generation. That is SKU-C, not yet released.
+**Do not promise:** Native BACnet/IP on this hardware. That capability is on a later release.
 
-**Proof:** Two hospital RTU retrofits in Q2 cut commissioning from a day to a morning. Details are in win stories.
+**Proof points:** Two hospital rooftop retrofits in Q2 2026 cut commissioning from a full day to a morning. See win stories.
 `,
-  "sku-a--pricing.md": `# SKU-A authorized pricing
+  "sku-a--pricing.md": `# Pulse Controller — authorized pricing
 
-Confidential to contracted distributors. Do not forward this page.
+Confidential. Contracted distributors only. Do not forward. Effective 1 September 2026.
 
 | Package | List | Authorized multiplier | Notes |
 |---|---|---|---|
-| Pulse Controller, 24 VAC | $1,840 | 0.58 | Stock |
+| Pulse Controller, 24 VAC | $1,840 | 0.58 | Stock, Elk Grove |
 | Pulse + economizer board | $2,210 | 0.58 | Stock |
 | Pulse + BACnet MS/TP option | $2,040 | 0.61 | 10-day |
 
-Project registration above twenty-five controllers unlocks a 0.03 extra point with channel manager approval. See discount authorization.
+Project registration above twenty-five controllers can unlock an additional 0.03 point with channel-manager approval. See discount authorization.
 `,
-  "sku-a--objection-handling.md": `# SKU-A objection handling
+  "sku-a--objection-handling.md": `# Pulse Controller — objection handling
 
-**“UC-90 is enough.”** Enough for binary start/stop. Not enough if the spec calls for enthalpy economizer and a documented BACnet list. Walk the sequence table in the install guide.
+Confidential. Effective 1 September 2026.
 
-**“We already own Acme tools.”** Pulse commissioning uses a browser to the onboard web server. No annual seat.
+**“UC-90 is enough.”** Enough for binary start/stop. Not enough if the specification calls for enthalpy economizer and a documented BACnet list. Walk the sequence table in the installation guide.
 
-**“Lead time.”** Standard Pulse ships from Elk Grove in two business days. Optioned BACnet boards are ten days.
+**“We already own Acme tools.”** Pulse commissioning uses the onboard web server. There is no annual seat.
 
-**“Can the owner log in to this portal?”** No. Public datasheets only. Sequences and multipliers stay on the distributor account.
+**“Lead time.”** Standard Pulse ships from Elk Grove in two business days. Optioned MS/TP boards are ten days.
+
+**Owner access to confidential sheets.** No. Published datasheets only. Sequences and multipliers stay with the distributor of record.
 `,
-  "sku-a--win-stories.md": `# SKU-A win stories
+  "sku-a--win-stories.md": `# Pulse Controller — reference jobs
 
-**Midwest hospital RTU replacement, Q2 2026.** Twenty-two Pulse controllers replaced mixed unitary boards. Commissioning completed in four days with two techs. The consulting engineer accepted the factory sequences with one occupancy-schedule exception.
+Confidential. Do not name owners in public marketing without channel-manager sign-off. Effective 1 September 2026.
 
-**School district packaged units, Q1 2026.** Pulse won on BACnet MS/TP to an existing supervisory server. Acme quoted a gateway. Helios quoted native MS/TP. Award at 0.58.
+**Midwest hospital rooftop replacement, Q2 2026.** Twenty-two Pulse controllers replaced mixed unitary boards. Commissioning finished in four days with two technicians. The engineer of record accepted factory sequences with one occupancy-schedule exception.
 
-Do not publish owner names in public marketing without channel-manager sign-off.
+**School district packaged units, Q1 2026.** Pulse won on native BACnet MS/TP to an existing supervisory server. Acme quoted a gateway. Award at 0.58.
 `,
-  "sku-b--battlecard.md": `# SKU-B Air Handler battlecard
+  "sku-b--battlecard.md": `# Indoor air handler — sales brief
 
-Lead with casing leakage and factory Pulse option. Against field-built AHUs, the conversation is schedule risk, not CFM.
+Confidential. Effective 1 September 2026.
 
-Do not discount below the authorized SKU-B band without a registered project. Coil extras are on the pricing sheet.
+Lead with casing leakage class and the optional factory Pulse package. Against field-built air handlers, the conversation is schedule risk, not CFM.
+
+Do not go below the authorized SKU-B band without a registered project. Coil extras are on the pricing sheet.
 `,
-  "sku-b--pricing.md": `# SKU-B authorized pricing
+  "sku-b--pricing.md": `# Indoor air handler — authorized pricing
 
-Confidential. Base unit multipliers assume standard 2-inch casing and chilled-water coil.
+Confidential. Effective 1 September 2026. Base multipliers assume standard 2-inch casing and a chilled-water coil.
 
 | CFM class | List | Multiplier |
 |---|---|---|
@@ -269,25 +279,31 @@ Confidential. Base unit multipliers assume standard 2-inch casing and chilled-wa
 
 DX coil, heat recovery, and sound attenuation are extras. Request a configured quote from order management.
 `,
-  "competitive--acme-controls.md": `# Competitive note: Acme Controls
+  "competitive--acme-controls.md": `# Competitive note — Acme Controls
 
-Acme UC-90 is the common unitary alternative. Strengths: price, brand familiarity, large installed base. Weaknesses: sequences sold separately, BACnet via gateway, desktop tool license.
+Confidential. Effective 1 September 2026.
 
-Do not disparage Acme in writing to the engineer. Contrast documented factory sequences and native MS/TP. If the job is already an Acme supervisory network, evaluate a gateway path before walking away.
+Acme UC-90 is the common unitary alternative. Strengths: list price, brand familiarity, large installed base. Gaps: sequences sold separately, BACnet through a gateway, desktop tool license.
+
+Do not disparage Acme in writing to the engineer. Contrast documented factory sequences and native MS/TP. If the job already sits on an Acme supervisory network, evaluate a gateway path before walking away.
 `,
-  "playbook--q3-enablement.md": `# Q3 enablement playbook
+  "playbook--q3-enablement.md": `# Q3 2026 enablement
 
-Priorities this quarter: Pulse stock on the shelf, SKU-B specified on indoor AHU replacements, and project registration before quoting.
+Confidential. Effective 1 September 2026.
 
-- Complete Pulse fundamentals training if you have not in 12 months
+Priorities: Pulse stocked at the counter, SKU-B specified on indoor air-handler replacements, and project registration before any special quote.
+
+- Complete Pulse fundamentals if you have not in the last 12 months
 - Register every job over $25,000 before sending multipliers
-- Use the public datasheet in the engineer package; keep this playbook internal
+- Put the public datasheet in the engineer package; keep this playbook internal
 `,
   "discount--authorization.md": `# Discount authorization
 
-Extra points beyond the published multiplier require a registered project and written approval from the regional channel manager.
+Confidential. Effective 1 September 2026.
 
-Submit: job name, competitor, volume, and requested point. Approvals expire in 45 days. Do not verbally commit a band that is not in the pricing sheet or an approval email.
+Points beyond the published multiplier require a registered project and written approval from the regional channel manager.
+
+Submit job name, competitor, volume, and requested point. Approvals expire in 45 days. Do not verbally commit a band that is not on the pricing sheet or in an approval email.
 `,
 };
 
