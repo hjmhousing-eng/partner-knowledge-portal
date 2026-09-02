@@ -141,11 +141,12 @@ export function createSdkLibraryPort(): BoxLibraryPort {
     },
 
     async searchAsUser(boxUserId, query): Promise<FileId[]> {
+      // Readers may inherit a partner subfolder without access to the library root.
+      // Search as-user globally; the adapter intersects these ids with the catalog.
       const result = await client
         .withAsUserHeader(boxUserId)
         .search.searchForContent({
           query,
-          ancestorFolderIds: [libraryId],
           type: "file",
         });
 

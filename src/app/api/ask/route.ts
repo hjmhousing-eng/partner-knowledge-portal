@@ -1,16 +1,17 @@
 import {
   convertToModelMessages,
-  stepCountIs,
   streamText,
-  tool,
   type UIMessage,
 } from "ai";
-import { z } from "zod";
-import { askFallbackModel, askPrimaryModel } from "@/lib/ask/gatewayWriter";
 import {
-  askBoxAiSources,
-  loadAskPassages,
-  searchLibrary,
+  gatewayClientError,
+  askGatewayOptions,
+  askPrimaryModel,
+  logGatewayError,
+} from "@/lib/ask/gatewayWriter";
+import {
+  AskRetrievalError,
+  retrieveAskContext,
 } from "@/lib/ask/searchLibrary";
 import {
   portalBoxAi,
@@ -30,85 +31,74 @@ export const maxDuration = 30;
  */
 export async function POST(request: Request) {
   const reader = await readSessionReader();
-  const { messages }: { messages: UIMessage[] } = await request.json();
+  let messages: UIMessage[];
+  try {
+    ({ messages } = (await request.json()) as { messages: UIMessage[] });
+  } catch {
+    return new Response("invalid_request", { status: 400 });
+  }
   const modelMessages = await convertToModelMessages(messages);
+  const latestUserMessage = [...messages]
+    .reverse()
+    .find((message) => message.role === "user");
+  const question =
+    latestUserMessage?.parts
+      .filter((part) => part.type === "text")
+      .map((part) => part.text)
+      .join("\n")
+      .trim() ?? "";
 
-  const tools = {
-    search_library: tool({
-      description:
-        "Search articles this reader may see. Anonymous gets public pages only.",
-      inputSchema: z.object({
-        query: z.string().min(1),
-      }),
-      execute: async ({ query }) => {
-        return searchLibrary(reader, query, {
-          asUser: portalSearch(),
-          public: portalPublicSearch(),
-        });
-      },
-    }),
-    ask_box_ai: tool({
-      description:
-        "Ask Box AI about file ids from search_library. Skips files the reader cannot open. Works on PDFs.",
-      inputSchema: z.object({
-        fileIds: z.array(z.string()).min(1),
-        question: z.string().min(1),
-      }),
-      execute: async ({ fileIds, question }) => {
-        return askBoxAiSources({
+  let context: Awaited<ReturnType<typeof retrieveAskContext>> = null;
+  try {
+    context = question
+      ? await retrieveAskContext({
           reader,
-          fileIds,
           question,
+          search: {
+            asUser: portalSearch(),
+            public: portalPublicSearch(),
+          },
           catalog: portalCatalog(),
           collaborations: portalCollaborations(),
           boxAi: portalBoxAi(),
-        });
-      },
-    }),
-    read_sources: tool({
-      description:
-        "Fallback: load markdown for file ids when Box AI has no answer. Skips PDFs and files the reader cannot open.",
-      inputSchema: z.object({
-        fileIds: z.array(z.string()).min(1),
-      }),
-      execute: async ({ fileIds }) => {
-        return loadAskPassages({
-          reader,
-          fileIds,
-          catalog: portalCatalog(),
-          collaborations: portalCollaborations(),
           store: portalStore(),
-        });
-      },
-    }),
-  };
-
-  const system = `You answer from this partner knowledge portal only.
-Use search_library, then ask_box_ai on the returned file ids.
-If Box AI has no answer, call read_sources.
-Cite only href values from tools (paths like /products/sku-a/overview). Never cite box.com.
-If tools return no sources, say you do not have a source. Do not invent partner pricing.`;
-
-  let result;
-  try {
-    result = streamText({
-      model: askPrimaryModel(),
-      stopWhen: stepCountIs(6),
-      system,
-      messages: modelMessages,
-      tools,
-      maxRetries: 0,
-    });
-  } catch {
-    result = streamText({
-      model: askFallbackModel(),
-      stopWhen: stepCountIs(6),
-      system,
-      messages: modelMessages,
-      tools,
-      maxRetries: 0,
+        })
+      : null;
+  } catch (error) {
+    const retrieval =
+      error instanceof AskRetrievalError
+        ? {
+            stage: error.stage,
+            statusCode: error.statusCode,
+          }
+        : { stage: "unknown" };
+    console.error(`Ask retrieval failed: ${JSON.stringify(retrieval)}`);
+    return new Response(`retrieval_${retrieval.stage}_unavailable`, {
+      status: 502,
     });
   }
 
-  return result.toUIMessageStreamResponse();
+  const system = `You answer from this partner knowledge portal only.
+Use only the retrieved notes below. Cite only listed href values, never box.com.
+If there are no notes or sources, say you do not have an accessible source.
+Do not invent specifications, pricing, or access to an unlisted article.
+
+Retrieved notes:
+${context?.notes ?? "No accessible source found."}
+
+Sources:
+${JSON.stringify(context?.sources ?? [])}`;
+
+  const result = streamText({
+    model: askPrimaryModel(),
+    providerOptions: askGatewayOptions(),
+    system,
+    messages: modelMessages,
+    maxRetries: 0,
+    onError: ({ error }) => logGatewayError(error),
+  });
+
+  return result.toUIMessageStreamResponse({
+    onError: gatewayClientError,
+  });
 }

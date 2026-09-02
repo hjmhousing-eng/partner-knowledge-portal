@@ -3,6 +3,8 @@ import {
   askBoxAiSources,
   citationHref,
   loadAskPassages,
+  normalizeAskQuery,
+  retrieveAskContext,
   searchLibrary,
 } from "./searchLibrary";
 import type { AskSearchPorts, LibraryHit, LibrarySearch } from "./searchLibrary";
@@ -341,5 +343,221 @@ describe("askBoxAiSources", () => {
         },
       }),
     ).resolves.toBeNull();
+  });
+});
+
+describe("retrieveAskContext", () => {
+  it("uses cached catalog metadata before searching Box", async () => {
+    let searches = 0;
+    let asks = 0;
+    const entry: CatalogEntry = {
+      fileId: "file_public",
+      slug: "sku-a/overview",
+      audience: "public",
+      title: "SKU-A overview",
+      format: "markdown",
+    };
+
+    const result = await retrieveAskContext({
+      reader: { kind: "anonymous" },
+      question: "What is SKU-A?",
+      search: {
+        asUser: silentAsUser,
+        public: {
+          async searchPublic() {
+            searches += 1;
+            return [entry];
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return entry;
+        },
+        async byFileId() {
+          return entry;
+        },
+        async list() {
+          return [entry];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask() {
+          asks += 1;
+          return "SKU-A is a configurable controller.";
+        },
+      },
+      store: {
+        async load() {
+          throw new Error("Box AI answered; text fallback must not run");
+        },
+      },
+    });
+
+    expect(searches).toBe(0);
+    expect(asks).toBe(1);
+    expect(result?.notes).toContain("configurable controller");
+    expect(result?.sources[0]?.href).toBe("/products/sku-a/overview");
+  });
+
+  it("normalizes a natural-language question before searching Box", async () => {
+    let boxQuery = "";
+    const result = await retrieveAskContext({
+      reader: { kind: "anonymous" },
+      question: "Tell me about the Pulse controller?",
+      search: {
+        asUser: silentAsUser,
+        public: {
+          async searchPublic(query) {
+            boxQuery = query;
+            return [];
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return null;
+        },
+        async byFileId() {
+          return null;
+        },
+        async list() {
+          return [];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask() {
+          throw new Error("no hits means Box AI must not run");
+        },
+      },
+      store: {
+        async load() {
+          throw new Error("no hits means text fallback must not run");
+        },
+      },
+    });
+
+    expect(boxQuery).toBe("Pulse controller");
+    expect(result).toBeNull();
+  });
+
+  it("identifies a catalog failure without serializing the provider error", async () => {
+    await expect(
+      retrieveAskContext({
+        reader: { kind: "anonymous" },
+        question: "Pulse",
+        search: {
+          asUser: silentAsUser,
+          public: {
+            async searchPublic() {
+              return [];
+            },
+          },
+        },
+        catalog: {
+          async bySlug() {
+            return null;
+          },
+          async byFileId() {
+            return null;
+          },
+          async list() {
+            throw new Error("provider details");
+          },
+        },
+        collaborations: {
+          async hasAccess() {
+            return false;
+          },
+        },
+        boxAi: {
+          async ask() {
+            return null;
+          },
+        },
+        store: {
+          async load() {
+            return null;
+          },
+        },
+      }),
+    ).rejects.toMatchObject({
+      name: "AskRetrievalError",
+      stage: "catalog",
+    });
+  });
+
+  it("falls back to article text when Box AI fails", async () => {
+    const entry: CatalogEntry = {
+      fileId: "pulse",
+      slug: "pulse/overview",
+      audience: "public",
+      title: "Pulse Controller",
+      format: "markdown",
+    };
+    const result = await retrieveAskContext({
+      reader: { kind: "anonymous" },
+      question: "Pulse controller",
+      search: {
+        asUser: silentAsUser,
+        public: {
+          async searchPublic() {
+            return [];
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return entry;
+        },
+        async byFileId() {
+          return entry;
+        },
+        async list() {
+          return [entry];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask() {
+          throw new Error("Box AI unavailable");
+        },
+      },
+      store: {
+        async load() {
+          return {
+            fileId: "pulse",
+            title: "Pulse Controller",
+            format: "markdown",
+            markdown: "Pulse sequences packaged equipment.",
+          };
+        },
+      },
+    });
+
+    expect(result?.notes).toContain("packaged equipment");
+    expect(result?.sources[0]?.href).toBe("/products/pulse/overview");
+  });
+});
+
+describe("normalizeAskQuery", () => {
+  it("removes conversational framing without dropping the subject", () => {
+    expect(normalizeAskQuery("Could you tell me about Pulse controller?")).toBe(
+      "Pulse controller",
+    );
   });
 });

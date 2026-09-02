@@ -39,6 +39,57 @@ export async function searchLibrary(
   return ports.asUser.searchAsUser(reader.boxUserId, query);
 }
 
+const QUESTION_PREFIX =
+  /^(?:(?:can|could|would)\s+you\s+)?(?:tell\s+me\s+(?:about|more\s+about)|what\s+(?:is|are)|who\s+(?:is|are)|describe|explain|find|show\s+me)\s+/i;
+
+export function normalizeAskQuery(question: string): string {
+  return question
+    .trim()
+    .replace(QUESTION_PREFIX, "")
+    .replace(/^(?:the|a|an)\s+/i, "")
+    .replace(/[?!.]+$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function searchCatalogMetadata(input: {
+  reader: Reader;
+  query: string;
+  catalog: ArticleCatalog;
+  collaborations: CollaborationLookup;
+}): Promise<LibraryHit[]> {
+  const tokens = input.query
+    .toLowerCase()
+    .split(/[^a-z0-9]+/)
+    .filter((token) => token.length > 1);
+  if (tokens.length === 0) {
+    return [];
+  }
+
+  const entries = await input.catalog.list();
+  const matches = await Promise.all(
+    entries.map(async (entry) => {
+      const haystack = `${entry.title} ${entry.slug}`.toLowerCase();
+      if (!tokens.every((token) => haystack.includes(token))) {
+        return null;
+      }
+      if (
+        entry.audience === "partner" &&
+        !(await canAccess(input.reader, entry.fileId, input.collaborations))
+      ) {
+        return null;
+      }
+      return {
+        fileId: entry.fileId,
+        title: entry.title,
+        slug: entry.slug,
+      };
+    }),
+  );
+
+  return matches.filter((hit): hit is LibraryHit => hit !== null);
+}
+
 /** Citations in answers are portal routes, not box.com file links. */
 export function citationHref(slug: string): string {
   const path = slug.replace(/^\/+/, "");
@@ -120,6 +171,58 @@ export type BoxAiSourceAnswer = {
   }>;
 };
 
+export type RetrievedAskContext = {
+  notes: string;
+  sources: BoxAiSourceAnswer["sources"];
+};
+
+export type AskRetrievalStage =
+  | "catalog"
+  | "access_gate"
+  | "box_search"
+  | "box_ai"
+  | "article_text";
+
+export class AskRetrievalError extends Error {
+  constructor(
+    readonly stage: AskRetrievalStage,
+    readonly statusCode?: number,
+  ) {
+    super(`ask_retrieval_${stage}`);
+    this.name = "AskRetrievalError";
+  }
+}
+
+function errorStatus(error: unknown): number | undefined {
+  try {
+    if (typeof error !== "object" || error === null) {
+      return undefined;
+    }
+    const details = error as Record<string, unknown>;
+    const responseInfo = details.responseInfo as
+      | Record<string, unknown>
+      | undefined;
+    const status = responseInfo?.statusCode ?? details.statusCode;
+    return typeof status === "number" ? status : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function atRetrievalStage<T>(
+  stage: AskRetrievalStage,
+  operation: () => Promise<T>,
+): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (error instanceof AskRetrievalError) {
+      throw error;
+    }
+    throw new AskRetrievalError(stage, errorStatus(error));
+  }
+}
+
 /**
  * Ask-tool: Box AI on files this reader may open. Public = CCG.
  * Partner = as-user after the gate. Never mix those actors.
@@ -194,5 +297,124 @@ export async function askBoxAiSources(input: {
   return {
     answer: chunks.join("\n\n"),
     sources,
+  };
+}
+
+export async function retrieveAskContext(input: {
+  reader: Reader;
+  question: string;
+  search: AskSearchPorts;
+  catalog: ArticleCatalog;
+  collaborations: CollaborationLookup;
+  boxAi: BoxAiAsk;
+  store: DocumentStore;
+}): Promise<RetrievedAskContext | null> {
+  const catalog: ArticleCatalog = {
+    bySlug: (slug) =>
+      atRetrievalStage("catalog", () => input.catalog.bySlug(slug)),
+    byFileId: (fileId) =>
+      atRetrievalStage("catalog", () => input.catalog.byFileId(fileId)),
+    list: () => atRetrievalStage("catalog", () => input.catalog.list()),
+  };
+  const collaborations: CollaborationLookup = {
+    hasAccess: (boxUserId, fileId) =>
+      atRetrievalStage("access_gate", () =>
+        input.collaborations.hasAccess(boxUserId, fileId),
+      ),
+  };
+  const search: AskSearchPorts = {
+    asUser: {
+      searchAsUser: (boxUserId, query) =>
+        atRetrievalStage("box_search", () =>
+          input.search.asUser.searchAsUser(boxUserId, query),
+        ),
+    },
+    public: {
+      searchPublic: (query) =>
+        atRetrievalStage("box_search", () =>
+          input.search.public.searchPublic(query),
+        ),
+    },
+  };
+  const boxAi: BoxAiAsk = {
+    ask: (request) =>
+      atRetrievalStage("box_ai", () => input.boxAi.ask(request)),
+  };
+  const store: DocumentStore = {
+    load: (fileId) =>
+      atRetrievalStage("article_text", () => input.store.load(fileId)),
+  };
+
+  const query = normalizeAskQuery(input.question);
+  const catalogHits = await searchCatalogMetadata({
+    reader: input.reader,
+    query,
+    catalog,
+    collaborations,
+  });
+  const hits =
+    catalogHits.length > 0
+      ? catalogHits
+      : await searchLibrary(input.reader, query, search);
+  const fileIds = hits.slice(0, 5).map((hit) => hit.fileId);
+  if (fileIds.length === 0) {
+    return null;
+  }
+
+  let boxAiFailure: AskRetrievalError | null = null;
+  let boxAiAnswer: BoxAiSourceAnswer | null = null;
+  try {
+    boxAiAnswer = await askBoxAiSources({
+      reader: input.reader,
+      fileIds,
+      question: input.question,
+      catalog,
+      collaborations,
+      boxAi,
+    });
+  } catch (error) {
+    if (!(error instanceof AskRetrievalError) || error.stage !== "box_ai") {
+      throw error;
+    }
+    boxAiFailure = error;
+    console.warn(
+      `Ask retrieval degraded: ${JSON.stringify({
+        stage: error.stage,
+        statusCode: error.statusCode,
+        fallback: "article_text",
+      })}`,
+    );
+  }
+  if (boxAiAnswer) {
+    return {
+      notes: boxAiAnswer.answer,
+      sources: boxAiAnswer.sources,
+    };
+  }
+
+  const passages = await loadAskPassages({
+    reader: input.reader,
+    fileIds,
+    catalog,
+    collaborations,
+    store,
+  });
+  if (passages.length === 0) {
+    if (boxAiFailure) {
+      throw boxAiFailure;
+    }
+    return null;
+  }
+
+  return {
+    notes: passages
+      .map((passage) => `${passage.title}\n${passage.markdown}`)
+      .join("\n\n"),
+    sources: passages.map(({ fileId, title, slug, href }) => ({
+      fileId,
+      title,
+      slug,
+      href,
+    })),
   };
 }

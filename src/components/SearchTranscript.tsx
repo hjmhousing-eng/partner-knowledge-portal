@@ -54,13 +54,41 @@ function linkify(text: string) {
   });
 }
 
+function searchErrorMessage(error: Error): string {
+  if (error.message.includes("gateway_rate_limited")) {
+    return "The answer service is rate-limited. Wait a minute and try again.";
+  }
+  if (error.message.includes("retrieval_catalog_unavailable")) {
+    return "The library catalog could not be loaded. Try again shortly.";
+  }
+  if (error.message.includes("retrieval_access_gate_unavailable")) {
+    return "Article access could not be verified. Try again shortly.";
+  }
+  if (error.message.includes("retrieval_box_search_unavailable")) {
+    return "Box search could not be reached. Try again shortly.";
+  }
+  if (error.message.includes("retrieval_box_ai_unavailable")) {
+    return "Source details could not be retrieved from Box AI. Try again shortly.";
+  }
+  if (error.message.includes("retrieval_article_text_unavailable")) {
+    return "The article text could not be loaded. Try again shortly.";
+  }
+  if (error.message.includes("retrieval_unknown_unavailable")) {
+    return "Source retrieval failed unexpectedly. Try again shortly.";
+  }
+  if (error.message.includes("gateway_unavailable")) {
+    return "The answer service is unavailable. Try again shortly.";
+  }
+  return "Search could not finish. Try again shortly.";
+}
+
 export function SearchTranscript() {
-  const { messages, busy, error } = useSearch();
+  const { messages, searching, error } = useSearch();
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
-  }, [messages, busy]);
+  }, [messages, searching]);
 
   return (
     <div className="ask-log" ref={logRef}>
@@ -103,16 +131,14 @@ export function SearchTranscript() {
           })}
         </div>
       ))}
-      {busy &&
+      {searching &&
       !messages.some((message) =>
         message.parts.some((part) => toolStepLabel(part)),
       ) ? (
-        <p className="ask-typing">Working…</p>
+        <p className="ask-typing">Searching the library…</p>
       ) : null}
       {error ? (
-        <p className="ask-error">
-          Search is rate-limited right now. Wait a minute and try again.
-        </p>
+        <p className="ask-error">{searchErrorMessage(error)}</p>
       ) : null}
     </div>
   );

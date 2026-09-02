@@ -72,7 +72,7 @@ Format: **choice → rejected → why → watch**. For “why not X,” start fr
 
 ### D10 — Split AI: Box AI retrieves; AI Gateway / AI SDK composes
 
-- **Choice:** Tools: `search_library`, `ask_box_ai(fileIds, question)`. Model on Gateway writes the streamed answer and cites `/product/...` URLs.
+- **Choice:** Search Box and ask Box AI before composition. One Gateway request writes the streamed answer and cites `/product/...` URLs.
 - **Rejected:** Download files and stuff them into OpenAI; **or** only Box AI.
 - **Why:** Box AI keeps bytes in Box and respects collab. Gateway is model flexibility, failover, and spend. The site owns the stream.
 - **Watch:** “Why not 100% Box AI?” No failover, no model swap, no unified cost. “Why not 100% Gateway on file bytes?” Residency and a second ACL.

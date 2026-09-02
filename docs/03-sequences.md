@@ -88,17 +88,13 @@ sequenceDiagram
 
   U->>N: POST question (session required)
   N->>N: Bind Box token as-user
-  N->>G: streamText (writer model + fallback)
-  G->>M: Chat with tools
-  M->>G: tool search_library(q)
-  G->>N: execute search
-  N->>B: Search as-user, ancestor = library folder
-  B-->>N: file ids user may see
-  N-->>M: hits (id, title, slug)
-  M->>G: tool ask_sources(ids, q)
+  N->>B: Search all content visible as-user
+  B-->>N: accessible file ids
+  N->>N: Intersect ids with the library catalog
   N->>B: Box AI Q&A on those ids (as-user)
   B-->>N: answer + file citations
-  N-->>M: passages + slugs
+  N->>G: streamText (gated notes + writer fallback)
+  G->>M: Compose one answer
   M-->>G: final answer with /products/... links
   G-->>N: token stream
   N-->>U: SSE / UI stream
@@ -106,9 +102,9 @@ sequenceDiagram
 
 **Never cache this response.** Permissions and wording are per user and per turn.
 
-**Cost/failover:** Gateway retries a second provider if the writer fails mid-stream; tools do not change.
+**Cost/failover:** Each question makes one Gateway request. Gateway retries a second provider if the writer fails.
 
-If Box AI returns nothing, the tool falls back to a text representation of the shortlist (still as-user, still no Blob copy).
+If Box AI returns nothing, retrieval falls back to a text representation of the shortlist (still as-user, still no Blob copy).
 
 ---
 

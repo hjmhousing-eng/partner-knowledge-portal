@@ -56,7 +56,7 @@ Box collaboration is the ACL. The site does not keep a second permission table.
 
 **Do:** Still as a logged-out window, type in the header search (or Ctrl-K). “What is the Pulse Controller?” The right sidebar shows search → Box AI → the answer.
 
-Search is not cached. The writer runs on AI Gateway. Tools: Box search, then Box AI on the hits, then a short answer with `/products/...` links. Gateway never gets the PDF bytes. Box AI reads the file in Box.
+Search is not cached. Box search and Box AI retrieve gated notes first, then one AI Gateway request writes a short answer with `/products/...` links. Gateway never gets the PDF bytes. Box AI reads the file in Box.
 
 **Must:** A public path. **Must not:** multipliers or partner pricing.
 

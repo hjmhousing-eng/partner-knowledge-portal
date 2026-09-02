@@ -17,7 +17,7 @@ Two planes. Nothing important is copied off Box.
                          ├─ Edge: cached shell (nav, chrome)
                          ├─ Function: “may this user open this file?” (Box, never from shared cache)
                          ├─ Cache: document payload tagged `doc:{fileId}`
-                         └─ Stream: ask-the-library via AI Gateway (tools call Box as the user)
+                         └─ Stream: Box retrieval, then one AI Gateway writer call
 ```
 
 ## What stays vs what moves
@@ -41,7 +41,7 @@ Two planes. Nothing important is copied off Box.
 | `lib/box/acl.ts` | `canUserAccess(user, fileId)`. Dynamic. Not in the shared document cache. |
 | `lib/box/map-slug.ts` | `portal_slug` metadata → file id. Cached as `library`. |
 | `app/api/webhooks/box/route.ts` | Verify signature, idempotency, `revalidateTag(doc:{id}, 'max')`. |
-| `app/api/ask/route.ts` | `streamText` through Gateway; tools: Box search, Box AI Q&A. |
+| `app/api/ask/route.ts` | Box search and Box AI Q&A, then one `streamText` call through Gateway. |
 | Box metadata template `portalDoc` | `slug`, `title`, `audience` (`public` \| `partner`), `product`, `nav_group` |
 
 ## Cache contract
