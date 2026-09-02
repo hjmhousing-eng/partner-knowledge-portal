@@ -95,7 +95,9 @@ export function SearchTranscript() {
       {messages.length === 0 ? (
         <p className="ask-empty">
           {pageContext
-            ? `Ask about ${pageContext.title}, or ask the wider library. `
+            ? pageContext.scope === "page"
+              ? `Questions are limited to ${pageContext.title}. `
+              : `Ask about ${pageContext.title}, or ask the wider library. `
             : "Ask a product, spec, or program question. "}
           Answers only include documents you can open.
         </p>

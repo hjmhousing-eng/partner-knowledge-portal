@@ -88,12 +88,16 @@ sequenceDiagram
   participant M as Model
   participant B as Box (search + Box AI)
 
-  U->>N: POST question + current article id when present
+  U->>N: POST question + current article id and scope when present
   N->>N: Bind Box token as-user
   N->>N: Resolve current article id through catalog and gate
-  N->>B: Search all content visible as-user
-  B-->>N: accessible file ids
-  N->>N: Intersect ids with catalog; use current article for relative or unmatched questions
+  alt Page-only pin
+    N->>N: Use the gated current article
+  else Article hint or whole library
+    N->>B: Search all content visible as-user
+    B-->>N: accessible file ids
+    N->>N: Intersect ids with catalog and apply the article hint
+  end
   N->>B: Box AI Q&A on those ids (as-user)
   B-->>N: answer + file citations
   N->>G: streamText (gated notes + writer fallback)

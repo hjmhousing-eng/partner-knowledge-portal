@@ -58,7 +58,7 @@ Box collaboration is the ACL. The site does not keep a second permission table.
 
 Search is not cached. Box search and Box AI retrieve gated notes first, then one AI Gateway request writes a short answer with `/products/...` links. Gateway never gets the PDF bytes. Box AI reads the file in Box.
 
-**Do:** Open the Pulse datasheet and ask, “What does this product do?” The current article appears in the Ask panel and leads the gated shortlist; broader questions still search the library.
+**Do:** Open the Pulse datasheet, click **Ask about this article**, and ask, “What does this product do?” The panel shows the pinned article and limits that question to it. Click **Search whole library** to return to broader questions.
 
 **Must:** A public path. **Must not:** multipliers or partner pricing.
 

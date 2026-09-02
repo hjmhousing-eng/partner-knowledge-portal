@@ -21,6 +21,10 @@ export type AskPageContext = {
   slug: string;
 };
 
+export type ActiveAskPageContext = AskPageContext & {
+  scope: "hint" | "page";
+};
+
 type SearchContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -34,8 +38,10 @@ type SearchContextValue = {
   messages: UIMessage[];
   headerRef: RefObject<HTMLInputElement | null>;
   focusHeader: () => void;
-  pageContext: AskPageContext | null;
-  setPageContext: (context: AskPageContext | null) => void;
+  pageContext: ActiveAskPageContext | null;
+  registerPageContext: (context: AskPageContext) => () => void;
+  pinPageContext: (context: AskPageContext) => void;
+  clearPageContext: () => void;
 };
 
 const SearchContext = createContext<SearchContextValue | null>(null);
@@ -58,7 +64,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [coolingDown, setCoolingDown] = useState(false);
-  const [pageContext, setPageContext] = useState<AskPageContext | null>(null);
+  const [pageContext, setPageContext] =
+    useState<ActiveAskPageContext | null>(null);
   const headerRef = useRef<HTMLInputElement>(null);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -86,6 +93,23 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     headerRef.current?.focus();
   }, []);
 
+  const registerPageContext = useCallback((context: AskPageContext) => {
+    setPageContext({ ...context, scope: "hint" });
+    return () =>
+      setPageContext((current) =>
+        current?.fileId === context.fileId ? null : current,
+      );
+  }, []);
+
+  const pinPageContext = useCallback((context: AskPageContext) => {
+    setPageContext({ ...context, scope: "page" });
+    setOpen(true);
+  }, []);
+
+  const clearPageContext = useCallback(() => {
+    setPageContext(null);
+  }, []);
+
   const submit = useCallback(
     (text?: string) => {
       const question = (text ?? input).trim();
@@ -106,6 +130,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
             currentPage: pageContext
               ? {
                   fileId: pageContext.fileId,
+                  scope: pageContext.scope,
                 }
               : null,
           },
@@ -144,7 +169,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       headerRef,
       focusHeader,
       pageContext,
-      setPageContext,
+      registerPageContext,
+      pinPageContext,
+      clearPageContext,
     }),
     [
       busy,
@@ -155,6 +182,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       open,
       pageContext,
       pending,
+      pinPageContext,
+      registerPageContext,
+      clearPageContext,
       submit,
       toggle,
     ],

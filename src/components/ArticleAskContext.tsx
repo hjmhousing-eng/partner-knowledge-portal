@@ -8,12 +8,19 @@ export function ArticleAskContext({
 }: {
   context: AskPageContext;
 }) {
-  const { setPageContext } = useSearch();
+  const { registerPageContext, pinPageContext } = useSearch();
 
   useEffect(() => {
-    setPageContext(context);
-    return () => setPageContext(null);
-  }, [context, setPageContext]);
+    return registerPageContext(context);
+  }, [context, registerPageContext]);
 
-  return null;
+  return (
+    <button
+      type="button"
+      className="article-ask-action"
+      onClick={() => pinPageContext(context)}
+    >
+      Ask about this article
+    </button>
+  );
 }

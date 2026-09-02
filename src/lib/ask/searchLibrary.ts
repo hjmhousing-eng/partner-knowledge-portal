@@ -178,6 +178,8 @@ export type RetrievedAskContext = {
   sources: BoxAiSourceAnswer["sources"];
 };
 
+export type AskPageScope = "hint" | "page";
+
 export type AskRetrievalStage =
   | "catalog"
   | "access_gate"
@@ -306,6 +308,7 @@ export async function retrieveAskContext(input: {
   reader: Reader;
   question: string;
   currentPageFileId?: FileId;
+  currentPageScope?: AskPageScope;
   search: AskSearchPorts;
   catalog: ArticleCatalog;
   collaborations: CollaborationLookup;
@@ -348,23 +351,29 @@ export async function retrieveAskContext(input: {
       atRetrievalStage("article_text", () => input.store.load(fileId)),
   };
 
-  const query = normalizeAskQuery(input.question);
-  const catalogHits = await searchCatalogMetadata({
-    reader: input.reader,
-    query,
-    catalog,
-    collaborations,
-  });
-  const searchedHits =
-    catalogHits.length > 0
-      ? catalogHits
-      : await searchLibrary(input.reader, query, search);
+  const currentPageScope = input.currentPageScope ?? "hint";
   const currentEntry = input.currentPageFileId
     ? await catalog.byFileId(input.currentPageFileId)
     : null;
+  let searchedHits: LibraryHit[] = [];
+  if (currentPageScope !== "page") {
+    const query = normalizeAskQuery(input.question);
+    const catalogHits = await searchCatalogMetadata({
+      reader: input.reader,
+      query,
+      catalog,
+      collaborations,
+    });
+    searchedHits =
+      catalogHits.length > 0
+        ? catalogHits
+        : await searchLibrary(input.reader, query, search);
+  }
   const includeCurrentEntry =
     currentEntry !== null &&
-    (searchedHits.length === 0 || CURRENT_PAGE_REFERENCE.test(input.question));
+    (currentPageScope === "page" ||
+      searchedHits.length === 0 ||
+      CURRENT_PAGE_REFERENCE.test(input.question));
   const fileIds = [
     ...(includeCurrentEntry ? [currentEntry.fileId] : []),
     ...searchedHits.map((hit) => hit.fileId),

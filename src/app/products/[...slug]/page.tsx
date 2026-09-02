@@ -57,6 +57,12 @@ async function Article({
 
   return (
     <article>
+      <header>
+        <p className="eyebrow">
+          {documentKind(articleSlug, result.article.format)}
+        </p>
+        <h1>{result.article.title}</h1>
+      </header>
       <ArticleAskContext
         context={{
           fileId: result.article.fileId,
@@ -64,12 +70,6 @@ async function Article({
           slug: articleSlug,
         }}
       />
-      <header>
-        <p className="eyebrow">
-          {documentKind(articleSlug, result.article.format)}
-        </p>
-        <h1>{result.article.title}</h1>
-      </header>
       <LeaveBehindDraft
         fileId={result.article.fileId}
         title={result.article.title}

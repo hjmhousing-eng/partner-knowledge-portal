@@ -13,6 +13,7 @@ export function SearchSidebar() {
     submit,
     busy,
     pageContext,
+    clearPageContext,
   } = useSearch();
   const sidebarRef = useRef<HTMLElement>(null);
 
@@ -55,9 +56,15 @@ export function SearchSidebar() {
         </button>
       </header>
       {pageContext ? (
-        <p className="ask-context">
-          Current article <strong>{pageContext.title}</strong>
-        </p>
+        <div className="ask-context">
+          <span>
+            {pageContext.scope === "page" ? "Pinned article" : "Current article"}
+          </span>
+          <strong>{pageContext.title}</strong>
+          <button type="button" onClick={clearPageContext}>
+            Search whole library
+          </button>
+        </div>
       ) : null}
       <SearchTranscript />
       <form

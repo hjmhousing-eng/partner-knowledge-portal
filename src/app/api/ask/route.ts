@@ -12,6 +12,7 @@ import {
 import {
   AskRetrievalError,
   retrieveAskContext,
+  type AskPageScope,
 } from "@/lib/ask/searchLibrary";
 import {
   portalBoxAi,
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
   const reader = await readSessionReader();
   let messages: UIMessage[];
   let currentPageFileId: string | undefined;
+  let currentPageScope: AskPageScope | undefined;
   try {
     const body = (await request.json()) as {
       messages: UIMessage[];
@@ -47,6 +49,10 @@ export async function POST(request: Request) {
       body.currentPage.fileId.length <= 128
     ) {
       currentPageFileId = body.currentPage.fileId;
+      currentPageScope =
+        "scope" in body.currentPage && body.currentPage.scope === "page"
+          ? "page"
+          : "hint";
     }
   } catch {
     return new Response("invalid_request", { status: 400 });
@@ -69,6 +75,7 @@ export async function POST(request: Request) {
           reader,
           question,
           currentPageFileId,
+          currentPageScope,
           search: {
             asUser: portalSearch(),
             public: portalPublicSearch(),

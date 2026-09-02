@@ -419,6 +419,22 @@ main {
   margin-bottom: 1.25rem;
 }
 
+.article-ask-action {
+  margin: 0 0 1rem;
+  appearance: none;
+  border: 1px solid var(--copper);
+  background: var(--copper);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+}
+
+.article-ask-action:hover {
+  background: #ed8a4d;
+}
+
 .leave-behind {
   margin: 0 0 1.75rem;
   max-width: 42rem;
@@ -853,6 +869,20 @@ main {
   margin-top: 0.15rem;
   color: var(--paper);
   font-weight: 600;
+}
+
+.ask-context button {
+  margin-top: 0.45rem;
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--copper);
+  font: inherit;
+  font-size: 0.74rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .ask-tab {
