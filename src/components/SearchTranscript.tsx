@@ -25,8 +25,8 @@ function toolStepLabel(part: {
   }
   if (name === "ask_box_ai") {
     return pending
-      ? "Asking Box AI about the matches…"
-      : "Box AI returned notes";
+      ? "Reviewing the matching articles…"
+      : "Relevant details found";
   }
   if (name === "read_sources") {
     return pending ? "Reading article text…" : "Loaded article text";

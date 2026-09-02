@@ -20,7 +20,7 @@ Markdown only. Headings: Share with the customer, Keep internal.`,
       prompt: `Document: ${input.title}\n\nBox AI notes:\n${input.notes}`,
     });
   } catch {
-    // Primary and fallback both missed (local Gateway key unset). Notes still came through the gate.
+    // Primary and fallback both missed. Gated source notes remain safe to show.
     return `## Share with the customer
 
 ${confidential}
@@ -31,6 +31,6 @@ ${input.notes}
 
 ## Keep internal
 
-Drafted from ${input.title}. Claims above are from Box AI or the article body; nothing else was added.`;
+Drafted from ${input.title}. Claims above come from the source article; nothing else was added.`;
   }
 }

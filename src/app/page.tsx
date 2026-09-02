@@ -8,7 +8,8 @@ export default function HomePage() {
         <h1>The desk for the job on the roof</h1>
         <p>
           Helios Controls ships packaged RTU and AHU sequences through the
-          channel. This site is the reading surface. Authors stay in Box.
+          channel. Find product literature, account documents, and answers in
+          one place.
         </p>
       </section>
       <div className="home-paths">

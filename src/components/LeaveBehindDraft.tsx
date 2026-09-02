@@ -42,7 +42,10 @@ export function LeaveBehindDraft({
   return (
     <section className="leave-behind">
       <div className="leave-behind__bar">
-        <p>Prepare a one-page brief from this article. Box AI reads the file; the site writes the draft.</p>
+        <p>
+          Prepare a one-page brief from this article. AI reviews the source and
+          writes the draft.
+        </p>
         <button type="button" onClick={() => void draft()} disabled={busy}>
           {busy ? "Drafting…" : "Draft leave-behind"}
         </button>
