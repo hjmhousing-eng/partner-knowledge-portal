@@ -7,14 +7,16 @@ export function SearchToggle() {
 
   return (
     <button
+      id="ask-tab"
       type="button"
-      className="search-toggle"
+      className="ask-tab"
       onClick={toggle}
-      hidden={open}
       aria-expanded={open}
       aria-controls="search-sidebar"
+      aria-label={open ? "Close Ask panel" : "Open Ask panel"}
     >
-      Show search
+      <span>Ask</span>
+      <span aria-hidden>{open ? "›" : "‹"}</span>
     </button>
   );
 }

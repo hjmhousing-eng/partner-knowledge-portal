@@ -14,7 +14,11 @@ export function SearchSidebar() {
     }
 
     function collapseOnOutsideClick(event: PointerEvent) {
-      if (!sidebarRef.current?.contains(event.target as Node)) {
+      const target = event.target as Element;
+      if (
+        !target.closest("#ask-tab") &&
+        !sidebarRef.current?.contains(target)
+      ) {
         setOpen(false);
       }
     }
@@ -29,14 +33,14 @@ export function SearchSidebar() {
       ref={sidebarRef}
       id="search-sidebar"
       className={`search-sidebar${open ? " is-open" : ""}`}
-      aria-label="Library search"
+      aria-label="Ask the library"
       aria-hidden={!open}
       inert={!open ? true : undefined}
     >
       <header className="search-sidebar__head">
         <div>
-          <p className="search-sidebar__kicker">Library search</p>
-          <h2>Search</h2>
+          <p className="search-sidebar__kicker">Library assistant</p>
+          <h2>Ask</h2>
         </div>
         <button type="button" onClick={() => setOpen(false)}>
           Hide
@@ -51,7 +55,7 @@ export function SearchSidebar() {
         }}
       >
         <label className="sr-only" htmlFor="sidebar-search">
-          Continue the search
+          Continue asking
         </label>
         <input
           id="sidebar-search"

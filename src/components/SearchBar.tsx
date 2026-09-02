@@ -14,7 +14,7 @@ export function SearchBar() {
       }}
     >
       <label className="sr-only" htmlFor="header-search">
-        Search the library
+        Ask the library
       </label>
       <input
         id="header-search"

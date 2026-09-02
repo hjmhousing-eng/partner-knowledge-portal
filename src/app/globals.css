@@ -839,24 +839,43 @@ main {
   cursor: pointer;
 }
 
-.search-toggle {
+.ask-tab {
   position: fixed;
-  right: max(1.25rem, 4vw);
-  bottom: 1.25rem;
+  right: 0;
+  top: 50%;
   z-index: 40;
-  border: 0;
-  border-radius: 999px;
-  padding: 0.7rem 1rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  border: 1px solid rgb(224 120 56 / 0.45);
+  border-right: 0;
+  border-radius: 0.75rem 0 0 0.75rem;
+  padding: 0.85rem 0.55rem;
   background: var(--copper);
   color: var(--ink);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+  box-shadow: -8px 8px 28px rgb(0 0 0 / 0.35);
+  transform: translateY(-50%);
+  transition:
+    right 0.28s ease,
+    background 0.2s ease;
 }
 
-.search-toggle[hidden] {
-  display: none;
+.ask-tab[aria-expanded="true"] {
+  right: min(24rem, calc(100vw - 2.8rem));
+}
+
+.ask-tab span:first-child {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ask-tab:hover {
+  background: #ed8a4d;
 }
 
 @media (min-width: 960px) {
@@ -909,6 +928,48 @@ main {
   color: #e8a089;
 }
 
+.ask-activity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: rgb(244 239 230 / 0.04);
+  color: var(--paper-dim);
+}
+
+.ask-activity__mark {
+  width: 1.2rem;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  border: 2px solid rgb(159 184 166 / 0.25);
+  border-top-color: var(--copper);
+  border-radius: 50%;
+  animation: ask-orbit 0.8s linear infinite;
+}
+
+.ask-activity strong,
+.ask-activity small {
+  display: block;
+}
+
+.ask-activity strong {
+  font-size: 0.84rem;
+}
+
+.ask-activity small {
+  margin-top: 0.15rem;
+  color: var(--sage);
+  font-size: 0.74rem;
+}
+
+@keyframes ask-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .ask-bubble {
   max-width: 92%;
   padding: 0.65rem 0.8rem;
@@ -933,6 +994,17 @@ main {
 
 .ask-bubble--assistant {
   background: rgb(244 239 230 / 0.06);
+}
+
+.ask-bubble a {
+  color: #f2a575;
+  text-decoration-color: rgb(242 165 117 / 0.55);
+  text-underline-offset: 0.18em;
+}
+
+.ask-bubble a:hover {
+  color: var(--paper);
+  text-decoration-color: var(--copper);
 }
 
 .ask-form {
@@ -963,6 +1035,7 @@ main {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ask-activity__mark,
   .ask-step.is-pending,
   .library-card,
   .home-system__signal i,
@@ -972,6 +1045,10 @@ main {
   }
 
   .search-sidebar {
+    transition: none;
+  }
+
+  .ask-tab {
     transition: none;
   }
 }

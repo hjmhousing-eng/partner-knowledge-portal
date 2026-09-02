@@ -79,7 +79,7 @@ function searchErrorMessage(error: Error): string {
   if (error.message.includes("gateway_unavailable")) {
     return "The answer service is unavailable. Try again shortly.";
   }
-  return "Search could not finish. Try again shortly.";
+  return "Ask could not finish. Try again shortly.";
 }
 
 export function SearchTranscript() {
@@ -135,7 +135,13 @@ export function SearchTranscript() {
       !messages.some((message) =>
         message.parts.some((part) => toolStepLabel(part)),
       ) ? (
-        <p className="ask-typing">Searching the library…</p>
+        <div className="ask-activity" role="status">
+          <span className="ask-activity__mark" aria-hidden />
+          <span>
+            <strong>Working on your question</strong>
+            <small>Finding permitted sources and preparing an answer…</small>
+          </span>
+        </div>
       ) : null}
       {error ? (
         <p className="ask-error">{searchErrorMessage(error)}</p>
