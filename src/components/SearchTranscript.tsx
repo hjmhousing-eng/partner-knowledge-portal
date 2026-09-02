@@ -83,7 +83,7 @@ function searchErrorMessage(error: Error): string {
 }
 
 export function SearchTranscript() {
-  const { messages, searching, error } = useSearch();
+  const { messages, searching, error, pageContext } = useSearch();
   const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,8 +94,10 @@ export function SearchTranscript() {
     <div className="ask-log" ref={logRef}>
       {messages.length === 0 ? (
         <p className="ask-empty">
-          Ask a product, spec, or program question. Answers only include
-          documents you can open.
+          {pageContext
+            ? `Ask about ${pageContext.title}, or ask the wider library. `
+            : "Ask a product, spec, or program question. "}
+          Answers only include documents you can open.
         </p>
       ) : null}
       {messages.map((message) => (

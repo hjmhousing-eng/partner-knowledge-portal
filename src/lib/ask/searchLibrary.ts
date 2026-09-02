@@ -303,6 +303,7 @@ export async function askBoxAiSources(input: {
 export async function retrieveAskContext(input: {
   reader: Reader;
   question: string;
+  currentPageFileId?: FileId;
   search: AskSearchPorts;
   catalog: ArticleCatalog;
   collaborations: CollaborationLookup;
@@ -352,11 +353,19 @@ export async function retrieveAskContext(input: {
     catalog,
     collaborations,
   });
-  const hits =
+  const searchedHits =
     catalogHits.length > 0
       ? catalogHits
       : await searchLibrary(input.reader, query, search);
-  const fileIds = hits.slice(0, 5).map((hit) => hit.fileId);
+  const currentEntry = input.currentPageFileId
+    ? await catalog.byFileId(input.currentPageFileId)
+    : null;
+  const fileIds = [
+    ...(currentEntry ? [currentEntry.fileId] : []),
+    ...searchedHits.map((hit) => hit.fileId),
+  ]
+    .filter((fileId, index, values) => values.indexOf(fileId) === index)
+    .slice(0, 5);
   if (fileIds.length === 0) {
     return null;
   }

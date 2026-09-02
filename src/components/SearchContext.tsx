@@ -15,6 +15,12 @@ import {
 } from "react";
 import { useSearchParams } from "next/navigation";
 
+export type AskPageContext = {
+  fileId: string;
+  title: string;
+  slug: string;
+};
+
 type SearchContextValue = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -28,6 +34,8 @@ type SearchContextValue = {
   messages: UIMessage[];
   headerRef: RefObject<HTMLInputElement | null>;
   focusHeader: () => void;
+  pageContext: AskPageContext | null;
+  setPageContext: (context: AskPageContext | null) => void;
 };
 
 const SearchContext = createContext<SearchContextValue | null>(null);
@@ -50,6 +58,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [coolingDown, setCoolingDown] = useState(false);
+  const [pageContext, setPageContext] = useState<AskPageContext | null>(null);
   const headerRef = useRef<HTMLInputElement>(null);
   const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -90,9 +99,20 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         setCoolingDown(false);
         cooldownTimer.current = null;
       }, 5_000);
-      void sendMessage({ text: question });
+      void sendMessage(
+        { text: question },
+        {
+          body: {
+            currentPage: pageContext
+              ? {
+                  fileId: pageContext.fileId,
+                }
+              : null,
+          },
+        },
+      );
     },
-    [busy, input, sendMessage],
+    [busy, input, pageContext, sendMessage],
   );
 
   useEffect(() => {
@@ -123,8 +143,21 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       messages,
       headerRef,
       focusHeader,
+      pageContext,
+      setPageContext,
     }),
-    [busy, error, focusHeader, input, messages, open, pending, submit, toggle],
+    [
+      busy,
+      error,
+      focusHeader,
+      input,
+      messages,
+      open,
+      pageContext,
+      pending,
+      submit,
+      toggle,
+    ],
   );
 
   return (

@@ -32,8 +32,22 @@ export const maxDuration = 30;
 export async function POST(request: Request) {
   const reader = await readSessionReader();
   let messages: UIMessage[];
+  let currentPageFileId: string | undefined;
   try {
-    ({ messages } = (await request.json()) as { messages: UIMessage[] });
+    const body = (await request.json()) as {
+      messages: UIMessage[];
+      currentPage?: unknown;
+    };
+    messages = body.messages;
+    if (
+      typeof body.currentPage === "object" &&
+      body.currentPage !== null &&
+      "fileId" in body.currentPage &&
+      typeof body.currentPage.fileId === "string" &&
+      body.currentPage.fileId.length <= 128
+    ) {
+      currentPageFileId = body.currentPage.fileId;
+    }
   } catch {
     return new Response("invalid_request", { status: 400 });
   }
@@ -54,6 +68,7 @@ export async function POST(request: Request) {
       ? await retrieveAskContext({
           reader,
           question,
+          currentPageFileId,
           search: {
             asUser: portalSearch(),
             public: portalPublicSearch(),

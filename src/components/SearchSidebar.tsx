@@ -5,7 +5,15 @@ import { SearchTranscript } from "./SearchTranscript";
 import { useSearch } from "./SearchContext";
 
 export function SearchSidebar() {
-  const { open, setOpen, input, setInput, submit, busy } = useSearch();
+  const {
+    open,
+    setOpen,
+    input,
+    setInput,
+    submit,
+    busy,
+    pageContext,
+  } = useSearch();
   const sidebarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -46,6 +54,11 @@ export function SearchSidebar() {
           Hide
         </button>
       </header>
+      {pageContext ? (
+        <p className="ask-context">
+          Current article <strong>{pageContext.title}</strong>
+        </p>
+      ) : null}
       <SearchTranscript />
       <form
         className="ask-form"

@@ -3,7 +3,7 @@
 import { useSearch } from "./SearchContext";
 
 export function SearchBar() {
-  const { input, setInput, submit, busy, headerRef } = useSearch();
+  const { input, setInput, submit, busy, headerRef, pageContext } = useSearch();
 
   return (
     <form
@@ -22,7 +22,9 @@ export function SearchBar() {
         value={input}
         onChange={(event) => setInput(event.target.value)}
         disabled={busy}
-        placeholder="Ask the library"
+        placeholder={
+          pageContext ? `Ask about ${pageContext.title}` : "Ask the library"
+        }
         autoComplete="off"
       />
       <button type="submit" disabled={busy}>

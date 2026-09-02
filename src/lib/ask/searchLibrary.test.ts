@@ -451,6 +451,117 @@ describe("retrieveAskContext", () => {
     expect(result).toBeNull();
   });
 
+  it("uses the current article when the question refers to the page", async () => {
+    const entry: CatalogEntry = {
+      fileId: "pulse",
+      slug: "pulse/overview",
+      audience: "public",
+      title: "Pulse Controller",
+      format: "markdown",
+    };
+    let askedFileIds: readonly string[] = [];
+
+    const result = await retrieveAskContext({
+      reader: { kind: "anonymous" },
+      question: "What does this product do?",
+      currentPageFileId: "pulse",
+      search: {
+        asUser: silentAsUser,
+        public: {
+          async searchPublic() {
+            return [];
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return entry;
+        },
+        async byFileId(fileId) {
+          return fileId === entry.fileId ? entry : null;
+        },
+        async list() {
+          return [entry];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask({ fileIds }) {
+          askedFileIds = fileIds;
+          return "Pulse sequences packaged equipment.";
+        },
+      },
+      store: {
+        async load() {
+          throw new Error("Box AI answered; text fallback must not run");
+        },
+      },
+    });
+
+    expect(askedFileIds).toEqual(["pulse"]);
+    expect(result?.notes).toContain("packaged equipment");
+  });
+
+  it("does not use current-page context when the reader cannot open it", async () => {
+    const entry: CatalogEntry = {
+      fileId: "partner-pricing",
+      slug: "pulse/pricing",
+      audience: "partner",
+      title: "Pulse pricing",
+      format: "markdown",
+    };
+
+    const result = await retrieveAskContext({
+      reader: { kind: "boxUser", boxUserId: "riley" },
+      question: "What does this page say?",
+      currentPageFileId: entry.fileId,
+      search: {
+        asUser: {
+          async searchAsUser() {
+            return [];
+          },
+        },
+        public: {
+          async searchPublic() {
+            return [];
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return entry;
+        },
+        async byFileId() {
+          return entry;
+        },
+        async list() {
+          return [entry];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask() {
+          throw new Error("denied context must not reach Box AI");
+        },
+      },
+      store: {
+        async load() {
+          throw new Error("denied context must not load article text");
+        },
+      },
+    });
+
+    expect(result).toBeNull();
+  });
+
   it("identifies a catalog failure without serializing the provider error", async () => {
     await expect(
       retrieveAskContext({

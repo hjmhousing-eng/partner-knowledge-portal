@@ -8,6 +8,7 @@ import { ArticleMarkdown } from "@/components/ArticleMarkdown";
 import { ArticlePdfViewer } from "@/components/ArticlePdfViewer";
 import { ArticleSkeleton } from "@/components/LibrarySkeletons";
 import { LeaveBehindDraft } from "@/components/LeaveBehindDraft";
+import { ArticleAskContext } from "@/components/ArticleAskContext";
 import { documentKind } from "@/lib/box/slug";
 
 export default function ProductPage({
@@ -30,10 +31,11 @@ async function Article({
   params: Promise<{ slug: string[] }>;
 }) {
   const { slug } = await params;
+  const articleSlug = slug.join("/");
   const reader = await readSessionReader();
   const result = await loadArticlePage({
     reader,
-    slug: slug.join("/"),
+    slug: articleSlug,
     catalog: portalCatalog(),
     collaborations: portalCollaborations(),
     loadBody: getCachedArticle,
@@ -55,9 +57,16 @@ async function Article({
 
   return (
     <article>
+      <ArticleAskContext
+        context={{
+          fileId: result.article.fileId,
+          title: result.article.title,
+          slug: articleSlug,
+        }}
+      />
       <header>
         <p className="eyebrow">
-          {documentKind(slug.join("/"), result.article.format)}
+          {documentKind(articleSlug, result.article.format)}
         </p>
         <h1>{result.article.title}</h1>
       </header>
