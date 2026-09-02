@@ -4,35 +4,43 @@ export default function HomePage() {
   return (
     <main className="home">
       <section className="home-hero">
-        <p className="hero__kicker">Distributor portal</p>
-        <h1>The desk for the job on the roof</h1>
-        <p>
-          Helios Controls ships packaged RTU and AHU sequences through the
-          channel. Find product literature, account documents, and answers in
-          one place.
-        </p>
+        <div className="home-hero__copy">
+          <p className="hero__kicker">Distributor portal</p>
+          <h1>Controls knowledge, ready for the job.</h1>
+          <p className="home-hero__lede">
+            Product literature, account documents, and practical answers for
+            Helios RTU and AHU controls.
+          </p>
+          <div className="home-hero__action">
+            <Link href="/library" className="home-primary">
+              Browse the library
+              <span aria-hidden>↗</span>
+            </Link>
+            <p>
+              Need something specific? Ask from the search bar above.
+            </p>
+          </div>
+        </div>
+        <div className="home-system" aria-hidden="true">
+          <div className="home-system__rail">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="home-system__field">
+            <span className="home-system__eyebrow">Helios network</span>
+            <strong>RTU / AHU</strong>
+            <div className="home-system__signal">
+              <i />
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <span className="home-system__status">Systems online</span>
+          </div>
+        </div>
       </section>
-      <div className="home-paths">
-        <Link href="/library" className="home-path">
-          <span className="home-path__meta">Browse</span>
-          <strong>Library</strong>
-          <span>Datasheets, overviews, and the documents on your account.</span>
-        </Link>
-        <Link href="/?ask=1" className="home-path">
-          <span className="home-path__meta">Ask</span>
-          <strong>Search</strong>
-          <span>
-            Type in the bar above. We only answer from files you can open.
-          </span>
-        </Link>
-        <Link href="/login" className="home-path">
-          <span className="home-path__meta">Account</span>
-          <strong>Sign in</strong>
-          <span>
-            Open pricing, battlecards, and install guides for your branch.
-          </span>
-        </Link>
-      </div>
     </main>
   );
 }

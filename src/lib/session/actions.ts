@@ -27,7 +27,7 @@ export async function loginPartner(formData: FormData) {
     secure: process.env.NODE_ENV === "production",
   });
 
-  redirect("/");
+  redirect("/library");
 }
 
 export async function logoutPartner() {

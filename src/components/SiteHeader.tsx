@@ -31,7 +31,6 @@ export function SiteHeader({
       )}
       <nav className="site-nav">
         <Link href="/library">Library</Link>
-        <Link href="/products/sku-a/overview">Products</Link>
         <Suspense fallback={<SessionSkeleton />}>
           <SessionControls />
         </Suspense>
