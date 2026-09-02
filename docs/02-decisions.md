@@ -72,7 +72,7 @@ Format: **choice → rejected → why → watch**. For “why not X,” start fr
 
 ### D10 — Split AI: Box AI retrieves; AI Gateway / AI SDK composes
 
-- **Choice:** Search Box and ask Box AI before composition. One Gateway request writes the streamed answer and cites `/product/...` URLs.
+- **Choice:** Search Box and ask Box AI before composition. On an article, include that file in the gated shortlist so references such as “this product” resolve without narrowing unrelated library searches. One Gateway request writes the streamed answer and cites `/products/...` URLs.
 - **Rejected:** Download files and stuff them into OpenAI; **or** only Box AI.
 - **Why:** Box AI keeps bytes in Box and respects collab. Gateway is model flexibility, failover, and spend. The site owns the stream.
 - **Watch:** “Why not 100% Box AI?” No failover, no model swap, no unified cost. “Why not 100% Gateway on file bytes?” Residency and a second ACL.
@@ -105,9 +105,9 @@ Format: **choice → rejected → why → watch**. For “why not X,” start fr
 - **Rejected:** Two Vercel projects; or everything behind login.
 - **Why:** One release path. Two cache lives (D4). Matches “we already have a site that’s half marketing, half gated.”
 
-### D15 — Render markdown as pages; PDFs through a site viewer
+### D15 — Render markdown as pages; deliver PDFs directly from Box
 
-- **Choice:** Demo corpus = markdown articles + PDFs. Markdown is HTML in our shell. PDFs stream from Box after the **gate** and render in our viewer (PDF.js). Bytes are not stored in the identity-free article cache.
+- **Choice:** The library contains markdown articles and PDFs. Markdown is HTML in our shell. After the **gate**, the Function returns a private, short-lived Box URL. PDF.js fetches the bytes from Box, so the Function does not proxy or cache the payload.
 - **Rejected:** Box Preview iframe (leaks Box chrome); text representation as the reader UI (destroys layout); LibreOffice/DOCX pipelines; syncing MDX in git.
 - **Why:** The site is the reading surface. Box stays the cabinet. Ask may still use text-rep later; the page must not.
 

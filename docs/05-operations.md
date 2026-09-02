@@ -3,7 +3,7 @@
 Use the decision id. Keep answers short.
 
 **“Security: no file bytes on Vercel.”**  
-D1 + D15. Markdown bodies are cached text. PDFs stream through the function after the gate into our viewer and are not stored on Blob. Ask uses Box AI / search as-user.
+D1 + D15. Markdown bodies are cached text. After the gate, the Function returns a private Box URL; Box sends the PDF bytes to our viewer. Ask uses Box AI and as-user search.
 
 **“No data leaves us-east-1.”**  
 Pin Functions to `iad1`. Gateway: constrain providers/regions if required. Box: US zone. Partner **bodies** can skip edge cache if legal treats HTML as data (D18). Shell can remain cached.

@@ -42,6 +42,8 @@ The reader identity lives in the session and the Box ACL call. It is not an argu
 
 **If Box is slow:** shell already painted; body streams. Next visitor hits `doc:{id}` cache.
 
+For a PDF, the viewer makes a second gated request. The Function asks Box for a short-lived download URL and returns a private redirect. PDF.js then reads the bytes from Box; the Function does not proxy or cache them.
+
 ---
 
 ## 2. Author publishes a new version in Box
@@ -86,11 +88,12 @@ sequenceDiagram
   participant M as Model
   participant B as Box (search + Box AI)
 
-  U->>N: POST question (session required)
+  U->>N: POST question + current article id when present
   N->>N: Bind Box token as-user
+  N->>N: Resolve current article id through catalog and gate
   N->>B: Search all content visible as-user
   B-->>N: accessible file ids
-  N->>N: Intersect ids with the library catalog
+  N->>N: Intersect ids with catalog; put current article first
   N->>B: Box AI Q&A on those ids (as-user)
   B-->>N: answer + file citations
   N->>G: streamText (gated notes + writer fallback)
