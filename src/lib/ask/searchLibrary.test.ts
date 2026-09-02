@@ -506,6 +506,69 @@ describe("retrieveAskContext", () => {
     expect(result?.notes).toContain("packaged equipment");
   });
 
+  it("lets an explicit library match override the current article", async () => {
+    const currentEntry: CatalogEntry = {
+      fileId: "pulse",
+      slug: "pulse/overview",
+      audience: "public",
+      title: "Pulse Controller",
+      format: "markdown",
+    };
+    const matchedEntry: CatalogEntry = {
+      fileId: "air-pricing",
+      slug: "air-handler/pricing",
+      audience: "public",
+      title: "Air Handler pricing",
+      format: "markdown",
+    };
+    let askedFileIds: readonly string[] = [];
+
+    await retrieveAskContext({
+      reader: { kind: "anonymous" },
+      question: "Tell me about Air Handler pricing",
+      currentPageFileId: currentEntry.fileId,
+      search: {
+        asUser: silentAsUser,
+        public: {
+          async searchPublic() {
+            throw new Error("catalog metadata should match this question");
+          },
+        },
+      },
+      catalog: {
+        async bySlug() {
+          return null;
+        },
+        async byFileId(fileId) {
+          return [currentEntry, matchedEntry].find(
+            (entry) => entry.fileId === fileId,
+          ) ?? null;
+        },
+        async list() {
+          return [currentEntry, matchedEntry];
+        },
+      },
+      collaborations: {
+        async hasAccess() {
+          return false;
+        },
+      },
+      boxAi: {
+        async ask({ fileIds }) {
+          askedFileIds = fileIds;
+          return "Air Handler pricing is account-specific.";
+        },
+      },
+      store: {
+        async load() {
+          throw new Error("Box AI answered; text fallback must not run");
+        },
+      },
+    });
+
+    expect(askedFileIds).toEqual(["air-pricing"]);
+  });
+
   it("does not use current-page context when the reader cannot open it", async () => {
     const entry: CatalogEntry = {
       fileId: "partner-pricing",

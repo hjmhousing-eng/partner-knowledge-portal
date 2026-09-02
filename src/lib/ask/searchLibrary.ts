@@ -41,6 +41,8 @@ export async function searchLibrary(
 
 const QUESTION_PREFIX =
   /^(?:(?:can|could|would)\s+you\s+)?(?:tell\s+me\s+(?:about|more\s+about)|what\s+(?:is|are)|who\s+(?:is|are)|describe|explain|find|show\s+me)\s+/i;
+const CURRENT_PAGE_REFERENCE =
+  /\b(?:(?:this|current)\s+(?:page|article|product|controller|document|guide|datasheet)|here|on\s+(?:this|the current)\s+page)\b/i;
 
 export function normalizeAskQuery(question: string): string {
   return question
@@ -360,8 +362,11 @@ export async function retrieveAskContext(input: {
   const currentEntry = input.currentPageFileId
     ? await catalog.byFileId(input.currentPageFileId)
     : null;
+  const includeCurrentEntry =
+    currentEntry !== null &&
+    (searchedHits.length === 0 || CURRENT_PAGE_REFERENCE.test(input.question));
   const fileIds = [
-    ...(currentEntry ? [currentEntry.fileId] : []),
+    ...(includeCurrentEntry ? [currentEntry.fileId] : []),
     ...searchedHits.map((hit) => hit.fileId),
   ]
     .filter((fileId, index, values) => values.indexOf(fileId) === index)

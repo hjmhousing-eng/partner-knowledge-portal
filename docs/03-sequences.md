@@ -93,7 +93,7 @@ sequenceDiagram
   N->>N: Resolve current article id through catalog and gate
   N->>B: Search all content visible as-user
   B-->>N: accessible file ids
-  N->>N: Intersect ids with catalog; put current article first
+  N->>N: Intersect ids with catalog; use current article for relative or unmatched questions
   N->>B: Box AI Q&A on those ids (as-user)
   B-->>N: answer + file citations
   N->>G: streamText (gated notes + writer fallback)
