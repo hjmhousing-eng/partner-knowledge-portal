@@ -39,7 +39,7 @@ const port: BoxLibraryPort = {
     }
     return ["file_1"];
   },
-  async downloadPdf() {
+  async getPdfDownloadUrl() {
     return null;
   },
   async askFiles() {

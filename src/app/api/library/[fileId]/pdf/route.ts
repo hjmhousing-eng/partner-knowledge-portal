@@ -1,16 +1,12 @@
 import { gateCatalogEntry } from "@/lib/articles/loadArticlePage";
 import {
-  downloadPortalPdf,
+  getPortalPdfDownloadUrl,
   portalCatalog,
   portalCollaborations,
 } from "@/lib/box/runtime";
 import { readSessionReader } from "@/lib/session/readSessionReader";
 
-function inlineFilename(slug: string) {
-  return `${slug.replaceAll("/", "-")}.pdf`;
-}
-
-/** PDF bytes after the gate. 404 not 403. Partner files download as-user. */
+/** The gate stays live; Box carries the permitted file bytes to the reader. */
 export async function GET(
   _request: Request,
   context: { params: Promise<{ fileId: string }> },
@@ -29,18 +25,17 @@ export async function GET(
     entry.audience === "partner" && reader.kind === "boxUser"
       ? reader.boxUserId
       : null;
-  const bytes = await downloadPortalPdf(fileId, asUserId);
-  if (!bytes) {
+  const downloadUrl = await getPortalPdfDownloadUrl(fileId, asUserId);
+  if (!downloadUrl) {
     return new Response(null, { status: 404 });
   }
 
-  const copy = Uint8Array.from(bytes);
-  return new Response(copy.buffer as ArrayBuffer, {
+  return new Response(null, {
+    status: 307,
     headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${inlineFilename(entry.slug)}"`,
+      Location: downloadUrl,
       "Cache-Control": "private, no-store",
-      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
     },
   });
 }

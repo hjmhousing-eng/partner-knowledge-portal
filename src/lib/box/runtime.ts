@@ -127,12 +127,12 @@ export function portalBoxAi() {
   };
 }
 
-export async function downloadPortalPdf(
+export async function getPortalPdfDownloadUrl(
   fileId: FileId,
   asUserId: string | null,
-): Promise<Uint8Array | null> {
+): Promise<string | null> {
   if (!isBoxConfigured()) {
     return null;
   }
-  return getSdkLibraryPort().downloadPdf(fileId, asUserId);
+  return getSdkLibraryPort().getPdfDownloadUrl(fileId, asUserId);
 }

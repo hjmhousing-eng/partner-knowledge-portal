@@ -160,16 +160,12 @@ export function createSdkLibraryPort(): BoxLibraryPort {
       });
     },
 
-    async downloadPdf(fileId, asUserId) {
+    async getPdfDownloadUrl(fileId, asUserId) {
       try {
         const actor = asUserId
           ? client.withAsUserHeader(asUserId)
           : client;
-        const downloaded = await actor.downloads.downloadFile(fileId);
-        if (!downloaded) {
-          return null;
-        }
-        return new Uint8Array(await readByteStream(downloaded));
+        return await actor.downloads.getDownloadFileUrl(fileId);
       } catch (error) {
         if (isAccessDenied(error)) {
           return null;
