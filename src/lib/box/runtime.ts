@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import {
   boxCatalog,
   boxCollaborations,
@@ -22,10 +22,32 @@ import type { LibrarySearch, PublicLibrarySearch } from "../ask/searchLibrary";
 import type { EventLog } from "../webhooks/handleBoxDocumentWebhook";
 
 export function portalCatalog(): ArticleCatalog {
+  return {
+    async bySlug(slug) {
+      const entries = await getCachedPortalCatalog();
+      return entries.find((entry) => entry.slug === slug) ?? null;
+    },
+    async byFileId(fileId) {
+      const entries = await getCachedPortalCatalog();
+      return entries.find((entry) => entry.fileId === fileId) ?? null;
+    },
+    list: getCachedPortalCatalog,
+  };
+}
+
+async function loadPortalCatalog() {
   if (isBoxConfigured()) {
-    return boxCatalog(getSdkLibraryPort());
+    return boxCatalog(getSdkLibraryPort()).list();
   }
-  return fixtureCatalog;
+  return fixtureCatalog.list();
+}
+
+/** Shared library shape only. Reader access stays outside this cache. */
+export async function getCachedPortalCatalog() {
+  "use cache";
+  cacheTag("library");
+  cacheLife("hours");
+  return loadPortalCatalog();
 }
 
 export function portalCollaborations(): CollaborationLookup {
@@ -80,6 +102,10 @@ export const memoryWebhookEvents: EventLog = {
 
 export async function revalidateDocumentTag(fileId: FileId) {
   revalidateTag(`doc:${fileId}`, "max");
+}
+
+export async function revalidateLibraryTag() {
+  revalidateTag("library", "max");
 }
 
 export function portalBoxAi() {

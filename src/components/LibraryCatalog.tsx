@@ -47,14 +47,24 @@ export async function LibraryCatalog() {
     entries.filter((entry) => entry.audience === "public"),
   );
 
-  const partnerVisible: CatalogEntry[] = [];
-  if (reader.kind === "boxUser") {
-    for (const entry of entries.filter((row) => row.audience === "partner")) {
-      if (await gateCatalogEntry(reader, entry, collaborations)) {
-        partnerVisible.push(entry);
-      }
-    }
-  }
+  const partnerEntries = entries.filter((row) => row.audience === "partner");
+  const partnerVisible =
+    reader.kind === "boxUser"
+      ? (
+          await Promise.all(
+            partnerEntries.map(async (entry) => ({
+              entry,
+              allowed: await gateCatalogEntry(
+                reader,
+                entry,
+                collaborations,
+              ),
+            })),
+          )
+        )
+          .filter(({ allowed }) => allowed)
+          .map(({ entry }) => entry)
+      : [];
 
   return (
     <>

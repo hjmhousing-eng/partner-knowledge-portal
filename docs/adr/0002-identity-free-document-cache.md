@@ -9,7 +9,7 @@ Date: 2026-08-26
 
 ## Decision
 
-`getDocument(fileId)` may use Cache Components (`use cache` + `cacheTag('doc:'+fileId)`). It must not receive `userId`. `canAccess(reader, fileId)` runs on every request and is not stored in that cache.
+`getDocument(fileId)` may use Cache Components (`use cache` + `cacheTag('doc:'+fileId)`). The library catalog is also identity-free and tagged `library`. Neither cache receives `userId`. `canAccess(reader, fileId)` runs on every request and is not stored in either cache.
 
 ## Rejected
 
@@ -21,4 +21,4 @@ A shared cache keyed by user explodes or leaks. A service account for partner fi
 
 ## Consequence
 
-Public articles may use CCG. Partner articles use as-user. Forbidden routes return 404.
+Public articles may use CCG. Partner articles use as-user. The catalog cache stores file IDs, slugs, audience, titles, and formats—not access decisions or bodies. Forbidden routes return 404.

@@ -1,5 +1,9 @@
 import { WebhooksManager } from "box-typescript-sdk-gen/lib/managers/webhooks.generated";
-import { memoryWebhookEvents, revalidateDocumentTag } from "@/lib/box/runtime";
+import {
+  memoryWebhookEvents,
+  revalidateDocumentTag,
+  revalidateLibraryTag,
+} from "@/lib/box/runtime";
 import { handleBoxDocumentWebhook } from "@/lib/webhooks/handleBoxDocumentWebhook";
 import { parseBoxWebhookPayload } from "@/lib/webhooks/parseBoxWebhook";
 
@@ -25,7 +29,12 @@ export async function POST(request: Request) {
     eventId: parsed.eventId,
     fileId: parsed.fileId,
     events: memoryWebhookEvents,
-    cache: { revalidate: revalidateDocumentTag },
+    cache: {
+      async revalidate(fileId) {
+        await revalidateDocumentTag(fileId);
+        await revalidateLibraryTag();
+      },
+    },
   });
 
   return Response.json({ status });
